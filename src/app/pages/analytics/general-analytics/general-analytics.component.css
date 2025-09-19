@@ -1,0 +1,13 @@
+.space-y > * + *{ margin-top: 0.75rem; }
+.row-item{ display:flex; align-items:center; justify-content:space-between; gap:0.75rem; padding:0.6rem 0.75rem; background: #f9fafb; border-radius: 0.5rem; }
+.flex-1{ flex: 1 1 auto; }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+.small{ font-size: 0.85rem; }
+.small-strong{ font-size: 0.9rem; font-weight: 600; }
+.input{ width:100%; border:1px solid var(--border); border-radius:0.5rem; padding:0.55rem 0.75rem; font:inherit; background:#fff; }
+
+.tabs{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.25rem; }
+.tab{ border:1px solid var(--border); padding:0.4rem 0.75rem; background:#fff; border-radius:0.5rem; cursor:pointer; }
+.tab.active{ background: color-mix(in oklab, var(--primary) 12%, white); border-color: color-mix(in oklab, var(--primary) 35%, white); }
+
+.chart-placeholder{ height: 16rem; display:flex; align-items:center; justify-content:center; background: #f3f4f6; border-radius: 0.5rem; }

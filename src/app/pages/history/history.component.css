@@ -1,0 +1,9 @@
+.hist-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.hist-table th, .hist-table td { text-align: left; border-bottom: 1px solid #f3f4f6; padding: 0.5rem; }
+.url { max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Minimal utilities for the search icon input */
+.relative{ position: relative; }
+.pl10{ padding-left: 2.5rem; }
+.icon{ position: absolute; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.icon.left{ left: 0.5rem; }

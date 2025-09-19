@@ -1,0 +1,15 @@
+.input{ width:100%; border:1px solid var(--border); border-radius:0.5rem; padding:0.55rem 0.75rem; font:inherit; }
+.pl10{ padding-left: 2.5rem; }
+.relative{ position: relative; }
+.icon{ position:absolute; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.icon.left{ left: 0.5rem; }
+
+.table{ width: 100%; border-collapse: separate; border-spacing: 0; }
+.thead .tr, .tbody .tr{ display: grid; grid-template-columns: 1.6fr 0.7fr 0.9fr 1.2fr 0.9fr 0.9fr 0.8fr 1.1fr; }
+.th, .td{ padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.thead .th{ font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.tbody .tr:hover{ background: #f9fafb; }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+.small{ font-size: 0.85rem; }
+.dot{ width: 0.45rem; height: 0.45rem; border-radius: 999px; display:inline-block; }
+.chart-placeholder{ height: 16rem; display:flex; align-items:center; justify-content:center; background:#f3f4f6; border-radius:0.5rem; }

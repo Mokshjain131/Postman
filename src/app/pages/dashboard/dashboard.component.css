@@ -1,0 +1,6 @@
+:host { display:block; }
+#two-col { grid-template-columns: 1fr; }
+@media (min-width: 1280px) {
+	#two-col { grid-template-columns: 1fr 1fr; }
+}
+.space-y > * + * { margin-top: 1rem; }

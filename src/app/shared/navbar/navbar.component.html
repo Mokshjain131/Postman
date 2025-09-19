@@ -1,0 +1,23 @@
+<nav class="navbar">
+	<div class="brand">
+		<a routerLink="/">Request Explorer</a>
+	</div>
+	<ul class="links">
+		<li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+		<li><a routerLink="/tester" routerLinkActive="active">API Tester</a></li>
+		<li class="dropdown">
+			<span>Analytics ▾</span>
+			<ul class="menu">
+				<li><a routerLink="/analytics/general">General</a></li>
+				<li><a routerLink="/analytics/api">API</a></li>
+			</ul>
+		</li>
+		<li><a routerLink="/history" routerLinkActive="active">History</a></li>
+		<li><a routerLink="/about" routerLinkActive="active">About</a></li>
+		<li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+	</ul>
+	<div class="auth">
+		<a routerLink="/login" class="btn">Login</a>
+		<a routerLink="/register" class="btn primary">Sign up</a>
+	</div>
+</nav>
