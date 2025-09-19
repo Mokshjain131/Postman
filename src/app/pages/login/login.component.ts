@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -15,9 +15,12 @@ export class LoginComponent {
   password = '';
   isLoading = false;
 
-  handleLogin(event: Event) {
-    event.preventDefault();
+  handleLogin(form: NgForm) {
     if (this.isLoading) return;
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
     this.isLoading = true;
     // Simulate API call
     setTimeout(() => {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -19,10 +19,15 @@ export class RegisterComponent {
     confirmPassword: '',
   };
   isLoading = false;
+  passwordMismatch = false;
 
-  handleRegister(event: Event) {
-    event.preventDefault();
+  handleRegister(form: NgForm) {
     if (this.isLoading) return;
+    this.passwordMismatch = this.formData.password !== this.formData.confirmPassword;
+    if (form.invalid || this.passwordMismatch) {
+      form.control.markAllAsTouched();
+      return;
+    }
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
