@@ -36,7 +36,8 @@
 
 	<div class="card">
 		<div class="card-padding scroll">
-			<table *ngIf="entries.length; else empty" class="hist-table">
+			@if (entries.length) {
+			<table class="hist-table">
 				<thead>
 					<tr>
 						<th>Method</th>
@@ -47,18 +48,18 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let e of entries">
+					@for (e of entries; track e) {
 						<td><span class="badge" [ngClass]="'text-method-' + e.method.toLowerCase()">{{ e.method }}</span></td>
 						<td class="url">{{ e.url }}</td>
 						<td>{{ e.status }}</td>
 						<td>{{ e.durationMs }} ms</td>
 						<td>{{ e.ts | date:'short' }}</td>
-					</tr>
+					}
 				</tbody>
 			</table>
-			<ng-template #empty>
+			} @else {
 				<p class="muted centered">No requests yet.</p>
-			</ng-template>
+			}
 		</div>
 	</div>
 </div>

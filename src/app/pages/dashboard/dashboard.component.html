@@ -10,7 +10,9 @@
 			<app-api-request />
 		</div>
 		<div class="space-y">
-			<app-api-response *ngIf="false"></app-api-response>
+			@if (false) {
+				<app-api-response></app-api-response>
+			}
 		</div>
 	</div>
 </div>

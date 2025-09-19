@@ -79,8 +79,9 @@
 						<div class="th">Last Called</div>
 					</div>
 				</div>
-						<div class="tbody" *ngIf="rows.length; else emptyRows">
-							<div class="tr" *ngFor="let ep of rows">
+						@if (rows.length) {
+							@for (ep of rows; track ep) {
+							<div class="tr">
 								<div class="td mono small ellipsis">{{ ep.endpoint }}</div>
 								<div class="td">
 									<span class="badge mono small badge-bg" [style.color]="methodColor(ep.method)" [style.borderColor]="methodColor(ep.method)">{{ ep.method }}</span>
@@ -95,19 +96,22 @@
 								<div class="td mono">{{ formatTime(ep.avgResponseTime) }}</div>
 								<div class="td mono muted">{{ formatTime(ep.p95ResponseTime) }}</div>
 								<div class="td">
-									<span *ngIf="ep.errorCount > 0" class="badge small badge-error">{{ ep.errorCount }}</span>
-									<span *ngIf="ep.errorCount === 0" class="muted">0</span>
+									@if (ep.errorCount > 0) {
+										<span class="badge small badge-error">{{ ep.errorCount }}</span>
+									} @else {
+										<span class="muted">0</span>
+									}
 								</div>
 								<div class="td small muted">{{ ep.lastCalled }}</div>
 							</div>
-						</div>
-						<ng-template #emptyRows>
+							}
+						} @else {
 							<div class="tbody">
 								<div class="tr">
 									<div class="td muted grid-span-all">No data in this range.</div>
 								</div>
 							</div>
-						</ng-template>
+						}
 			</div>
 		</div>
 	</div>

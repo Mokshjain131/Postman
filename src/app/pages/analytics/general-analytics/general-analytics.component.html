@@ -18,7 +18,8 @@
 
 	<!-- Stats grid -->
 		<div class="grid grid-4 stats">
-			<div class="card card-padding" *ngFor="let s of stats">
+			@for (s of stats; track s) {
+			<div class="card card-padding">
 			<div class="row">
 				<div class="muted label">{{ s.title }}</div>
 			</div>
@@ -28,6 +29,7 @@
 			</div>
 				<p class="muted small mt-025">{{ s.description }}</p>
 		</div>
+			}
 	</div>
 
 	<div class="grid grid-2 grid-gap">
@@ -37,8 +39,9 @@
 				<h3 class="small-strong h3-compact">Status Code Distribution</h3>
 				<p class="muted mb-075">Breakdown of response status codes</p>
 
-					<div class="space-y" *ngIf="statusDistribution?.length; else noStatus">
-					<div *ngFor="let item of statusDistribution" class="space-y mb-075">
+					@if (statusDistribution?.length) {
+						@for (item of statusDistribution; track item) {
+						<div class="space-y mb-075">
 						<div class="row fs-095">
 							<span>{{ item.status }}</span>
 							<span class="mono-count">{{ item.count | number }}</span>
@@ -49,11 +52,11 @@
 						<div class="muted muted-row">
 							<span>{{ item.percentage }}%</span>
 						</div>
-					</div>
-				</div>
-					<ng-template #noStatus>
+						</div>
+						}
+					} @else {
 						<p class="muted small">No requests in this range.</p>
-					</ng-template>
+					}
 			</div>
 		</div>
 
@@ -63,18 +66,19 @@
 				<h3 class="small-strong h3-compact">Top Endpoints</h3>
 				<p class="muted mb-075">Most frequently tested API endpoints</p>
 
-					<div class="space-y" *ngIf="topEndpoints?.length; else noTop">
-						<div *ngFor="let ep of topEndpoints; let i = index" class="row-item">
+					@if (topEndpoints?.length) {
+						@for (ep of topEndpoints; let i = $index; track ep) {
+						<div class="row-item">
 						<div class="flex-1">
 							<div class="mono small-strong">{{ ep.endpoint }}</div>
 							<div class="muted small">{{ ep.requests | number }} requests • {{ ep.avgTime }} avg • {{ ep.errorRate }} errors</div>
 						</div>
 						<span class="badge">#{{ i + 1 }}</span>
-					</div>
-				</div>
-					<ng-template #noTop>
+						</div>
+						}
+					} @else {
 						<p class="muted small">No endpoints yet.</p>
-					</ng-template>
+					}
 			</div>
 		</div>
 	</div>
@@ -91,15 +95,15 @@
 				<button class="tab" [class.active]="activeTab==='errors'" (click)="setTab('errors')">Error Rate</button>
 			</div>
 
-			<div class="chart-placeholder" *ngIf="activeTab==='requests'">
+			@if (activeTab==='requests') {
 				<p class="muted">Request volume chart would be displayed here</p>
-			</div>
-			<div class="chart-placeholder" *ngIf="activeTab==='response-time'">
+			}
+			@if (activeTab==='response-time') {
 				<p class="muted">Response time chart would be displayed here</p>
-			</div>
-			<div class="chart-placeholder" *ngIf="activeTab==='errors'">
+			}
+			@if (activeTab==='errors') {
 				<p class="muted">Error rate chart would be displayed here</p>
-			</div>
+			}
 		</div>
 	</div>
 </div>

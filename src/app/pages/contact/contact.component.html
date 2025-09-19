@@ -34,7 +34,9 @@
 					</div>
 					<div>
 						<button type="button" class="btn grad" (click)="$any(this).sent = true">Send Message</button>
-						<span *ngIf="$any(this).sent" class="muted ml-05">Message sent! (demo)</span>
+						@if ($any(this).sent) {
+							<span class="muted ml-05">Message sent! (demo)</span>
+						}
 					</div>
 				</form>
 			</div>

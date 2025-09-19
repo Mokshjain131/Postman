@@ -4,7 +4,7 @@
 		<div class="row">
 			<label>Method</label>
 			<select [(ngModel)]="request.method" name="method">
-				<option *ngFor="let m of methods" [value]="m">{{ m }}</option>
+				@for (m of methods; track m) { <option [value]="m">{{ m }}</option> }
 			</select>
 		</div>
 		<div class="row">
@@ -13,11 +13,13 @@
 		</div>
 
 		<div class="headers">
-			<div class="row header-row" *ngFor="let h of headerEntries; index as i">
+			@for (h of headerEntries; let i = $index; track h) {
+			<div class="row header-row">
 				<input [(ngModel)]="h.key" name="hk{{i}}" placeholder="Header name" />
 				<input [(ngModel)]="h.value" name="hv{{i}}" placeholder="Header value" />
 				<button type="button" class="link" (click)="removeHeader(i)">Remove</button>
 			</div>
+			}
 			<button type="button" class="link" (click)="addHeader()">+ Add header</button>
 		</div>
 
@@ -31,6 +33,6 @@
 		</div>
 	</form>
 
-	<app-api-response *ngIf="response" [response]="response"></app-api-response>
-	<p class="error" *ngIf="errorText">{{ errorText }}</p>
+	@if (response) { <app-api-response [response]="response"></app-api-response> }
+	@if (errorText) { <p class="error">{{ errorText }}</p> }
 </section>
