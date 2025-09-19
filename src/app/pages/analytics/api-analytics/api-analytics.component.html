@@ -1,41 +1,42 @@
-<div class="container" style="padding:2rem 1rem;">
-	<div style="margin-bottom:1.25rem;">
-		<h1 style="font-size:1.75rem; font-weight:700; margin:0;">API Analytics</h1>
-		<p class="muted" style="margin-top:0.35rem;">Detailed performance metrics for individual API endpoints</p>
+
+<div class="container">
+	<div class="header">
+		<h1 class="title">API Analytics</h1>
+		<p class="muted subtitle">Detailed performance metrics for individual API endpoints</p>
 	</div>
 
 	<!-- Summary cards -->
-		<div class="grid grid-4" style="gap:1rem; margin-bottom:1.25rem;">
+		<div class="grid grid-4 stats">
 		<div class="card card-padding">
 			<div class="muted small">Total Endpoints</div>
-				<div style="font-size:1.35rem; font-weight:700;">{{ rows.length }}</div>
+				<div class="mono fs-12-700">{{ rows.length }}</div>
 				<div class="muted small">Active endpoints (in range)</div>
 		</div>
 		<div class="card card-padding">
 			<div class="muted small">Avg Success Rate</div>
-				<div style="font-size:1.35rem; font-weight:700;">{{ summary.avgSuccessRate | number:'1.0-1' }}%</div>
+				<div class="mono fs-12-700">{{ summary.avgSuccessRate | number:'1.0-1' }}%</div>
 				<div class="muted small">Across shown endpoints</div>
 		</div>
 		<div class="card card-padding">
 			<div class="muted small">Avg Response Time</div>
-				<div style="font-size:1.35rem; font-weight:700;">{{ summary.avgResponseTime | number:'1.0-0' }}ms</div>
+				<div class="mono fs-12-700">{{ summary.avgResponseTime | number:'1.0-0' }}ms</div>
 				<div class="muted small">P95: {{ summary.p95ResponseTime | number:'1.0-0' }}ms</div>
 		</div>
 		<div class="card card-padding">
 			<div class="muted small">Error Rate</div>
-				<div style="font-size:1.35rem; font-weight:700;">{{ summary.errorRatePercent | number:'1.0-1' }}%</div>
+				<div class="mono fs-12-700">{{ summary.errorRatePercent | number:'1.0-1' }}%</div>
 				<div class="muted small">Total errors: {{ summary.totalErrors | number }}</div>
 		</div>
 	</div>
 
 	<!-- Filters -->
-	<div class="card" style="margin-bottom:1rem;">
+	<div class="card mb-1">
 		<div class="card-padding">
-			<h3 style="font-size:1.1rem; font-weight:700; margin:0 0 0.75rem;">Filters</h3>
-			<div class="grid grid-4" style="gap:0.75rem;">
+			<h3 class="small-strong h3-compact mb-075">Filters</h3>
+			<div class="grid grid-4 filters">
 				<div class="relative">
 					<input class="input pl10" [(ngModel)]="q" (input)="recompute()" placeholder="Search endpoints..." />
-					<span class="icon left" style="left:0.75rem;">
+					<span class="icon left left-075">
 						<img src="/search.svg" alt="" width="16" height="16" />
 					</span>
 				</div>
@@ -64,7 +65,7 @@
 
 	<!-- Table -->
 	<div class="card">
-		<div class="card-padding" style="padding:0;">
+		<div class="card-padding pad-0">
 			<div class="table">
 				<div class="thead">
 					<div class="tr">
@@ -80,13 +81,13 @@
 				</div>
 						<div class="tbody" *ngIf="rows.length; else emptyRows">
 							<div class="tr" *ngFor="let ep of rows">
-								<div class="td mono small" style="max-width:24rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ep.endpoint }}</div>
+								<div class="td mono small ellipsis">{{ ep.endpoint }}</div>
 								<div class="td">
-									<span class="badge mono small" [style.color]="methodColor(ep.method)" [style.borderColor]="methodColor(ep.method)" style="background: color-mix(in oklab, currentColor 12%, white);">{{ ep.method }}</span>
+									<span class="badge mono small badge-bg" [style.color]="methodColor(ep.method)" [style.borderColor]="methodColor(ep.method)">{{ ep.method }}</span>
 								</div>
 								<div class="td mono">{{ ep.totalRequests | number }}</div>
 								<div class="td">
-									<div style="display:flex; align-items:center; gap:0.4rem;">
+									<div class="flex-row">
 										<span class="dot" [style.background]="successRateColor(ep.successRate)"></span>
 										<span class="mono">{{ ep.successRate }}%</span>
 									</div>
@@ -94,7 +95,7 @@
 								<div class="td mono">{{ formatTime(ep.avgResponseTime) }}</div>
 								<div class="td mono muted">{{ formatTime(ep.p95ResponseTime) }}</div>
 								<div class="td">
-									<span *ngIf="ep.errorCount > 0" class="badge small" style="background:#fee2e2; color:#991b1b; border-color:#fecaca;">{{ ep.errorCount }}</span>
+									<span *ngIf="ep.errorCount > 0" class="badge small badge-error">{{ ep.errorCount }}</span>
 									<span *ngIf="ep.errorCount === 0" class="muted">0</span>
 								</div>
 								<div class="td small muted">{{ ep.lastCalled }}</div>
@@ -103,7 +104,7 @@
 						<ng-template #emptyRows>
 							<div class="tbody">
 								<div class="tr">
-									<div class="td" style="grid-column: 1/-1;" class="muted">No data in this range.</div>
+									<div class="td muted grid-span-all">No data in this range.</div>
 								</div>
 							</div>
 						</ng-template>
@@ -112,10 +113,10 @@
 	</div>
 
 	<!-- Trends Card -->
-	<div class="card" style="margin-top:1.25rem;">
+	<div class="card mb-1">
 		<div class="card-padding">
-			<h3 style="font-size:1.1rem; font-weight:700; margin:0 0 0.25rem;">Endpoint Performance Trends</h3>
-			<p class="muted" style="margin:0 0 0.75rem;">Select an endpoint above to view detailed performance analysis</p>
+			<h3 class="small-strong h3-compact">Endpoint Performance Trends</h3>
+			<p class="muted mb-075">Select an endpoint above to view detailed performance analysis</p>
 			<div class="chart-placeholder">
 				<p class="muted">Click on an endpoint to view detailed metrics</p>
 			</div>

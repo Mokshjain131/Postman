@@ -58,8 +58,6 @@
 													<p class="error" *ngIf="registerForm.submitted && !registerForm.controls['confirmPassword']?.errors && passwordMismatch">Passwords do not match.</p>
 						</div>
 
-						<!-- Terms & Privacy checkbox removed as requested -->
-
 												<button type="submit" class="btn grad w-full" [disabled]="isLoading || registerForm.invalid || passwordMismatch">
 							<span *ngIf="isLoading" class="spinner"></span>
 							{{ isLoading ? 'Creating account...' : 'Create Account' }}

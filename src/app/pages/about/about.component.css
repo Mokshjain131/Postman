@@ -1,0 +1,97 @@
+/* Container padding */
+.container {
+	padding: 3rem 1rem;
+}
+
+/* Hero section */
+.hero {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.hero .badge {
+	margin-bottom: 1rem;
+}
+
+.title {
+	font-size: clamp(2rem, 5vw, 3rem);
+	font-weight: 800;
+	margin: 0 0 0.75rem;
+}
+
+.lead {
+	font-size: 1.1rem;
+	max-width: 60ch;
+	margin: 0 auto;
+}
+
+/* Cards/sections */
+.mb-2 {
+	margin-bottom: 2rem;
+}
+
+.center {
+	text-align: center;
+}
+
+.section {
+	margin-bottom: 2rem;
+}
+
+.section-header {
+	text-align: center;
+	margin-bottom: 1.25rem;
+}
+
+.section-title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem;
+}
+
+.section-subtitle {
+	max-width: 60ch;
+	margin: 0 auto;
+}
+
+.narrow {
+	max-width: 70ch;
+	margin: 0 auto;
+}
+
+.mb-075 {
+	margin-bottom: 0.75rem;
+}
+
+/* CTA */
+.cta {
+	text-align: center;
+}
+
+.cta-card {
+	background: linear-gradient(
+		90deg,
+		color-mix(in oklab, var(--primary) 8%, #fff),
+		color-mix(in oklab, var(--primary) 4%, #fff)
+	);
+	border-color: color-mix(in oklab, var(--primary) 30%, #fff);
+}
+
+.cta-title {
+	font-size: 1.7rem;
+	font-weight: 800;
+	margin: 0 0 0.5rem;
+}
+
+.cta-sub {
+	max-width: 60ch;
+	margin: 0 auto 1rem;
+}
+
+.cta-actions {
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+

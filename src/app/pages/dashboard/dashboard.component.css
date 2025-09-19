@@ -1,6 +1,37 @@
-:host { display:block; }
-#two-col { grid-template-columns: 1fr; }
+:host { 
+	display:block; 
+}
+
+#two-col { 
+	grid-template-columns: 1fr; 
+}
+
 @media (min-width: 1280px) {
 	#two-col { grid-template-columns: 1fr 1fr; }
 }
+
 .space-y > * + * { margin-top: 1rem; }
+
+.container {
+	padding: 2rem 1rem;
+}
+
+.header {
+	margin-bottom: 1rem;
+}
+
+.title {
+	font-size: 1.75rem;
+	font-weight: 700;
+	margin: 0;
+}
+
+.subtitle {
+	margin-top: 0.35rem;
+}
+
+.grid-one {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+}

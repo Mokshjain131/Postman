@@ -1,11 +1,12 @@
-<div class="container" style="padding:2rem 1rem;">
-	<div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1.25rem;">
+
+<div class="container">
+	<div class="header">
 		<div>
-			<h1 style="font-size:1.75rem; font-weight:700; margin:0;">General Analytics</h1>
-			<p class="muted" style="margin:0.35rem 0 0;">Overview of your API testing activity and performance metrics</p>
+			<h1 class="title">General Analytics</h1>
+			<p class="muted subtitle">Overview of your API testing activity and performance metrics</p>
 		</div>
 			<div>
-				<select class="input" style="min-width:10rem;" [(ngModel)]="timeRange" (change)="recompute()">
+				<select class="input minw-10rem" [(ngModel)]="timeRange" (change)="recompute()">
 					<option value="7d">Last 7 days</option>
 					<option value="30d">Last 30 days</option>
 					<option value="90d">Last 90 days</option>
@@ -16,36 +17,36 @@
 	</div>
 
 	<!-- Stats grid -->
-		<div class="grid grid-4" style="gap:1rem; margin-bottom:1.25rem;">
+		<div class="grid grid-4 stats">
 			<div class="card card-padding" *ngFor="let s of stats">
-			<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.25rem;">
-				<div class="muted" style="font-size:0.9rem;">{{ s.title }}</div>
+			<div class="row">
+				<div class="muted label">{{ s.title }}</div>
 			</div>
-			<div style="display:flex; align-items:center; justify-content:space-between;">
-				<div style="font-weight:700; font-size:1.35rem;">{{ s.value }}</div>
+			<div class="row">
+				<div class="value">{{ s.value }}</div>
 				<span class="badge" [class.text-method-get]="s.trend==='up'" [class.text-method-delete]="s.trend==='down'">{{ s.change }}</span>
 			</div>
-			<p class="muted" style="font-size:0.8rem; margin-top:0.25rem;">{{ s.description }}</p>
+				<p class="muted small mt-025">{{ s.description }}</p>
 		</div>
 	</div>
 
-	<div class="grid grid-2" style="gap:1rem;">
+	<div class="grid grid-2 grid-gap">
 		<!-- Status Distribution -->
 			<div class="card">
 			<div class="card-padding">
-				<h3 style="font-size:1.1rem; font-weight:700; margin:0 0 0.25rem;">Status Code Distribution</h3>
-				<p class="muted" style="margin:0 0 0.75rem;">Breakdown of response status codes</p>
+				<h3 class="small-strong h3-compact">Status Code Distribution</h3>
+				<p class="muted mb-075">Breakdown of response status codes</p>
 
 					<div class="space-y" *ngIf="statusDistribution?.length; else noStatus">
-					<div *ngFor="let item of statusDistribution" style="margin-bottom:0.75rem;">
-						<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.95rem;">
+					<div *ngFor="let item of statusDistribution" class="space-y mb-075">
+						<div class="row fs-095">
 							<span>{{ item.status }}</span>
-							<span style="font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, &quot;Liberation Mono&quot;, monospace;">{{ item.count | number }}</span>
+							<span class="mono-count">{{ item.count | number }}</span>
 						</div>
-						<div style="height:0.5rem; background:#e5e7eb; border-radius:999px; overflow:hidden;">
-							<div [style.width.%]="item.percentage" [style.background]="statusColorVar(item.color)" style="height:100%;"></div>
+						<div class="bar">
+							<div class="h-100 bar-fill" [ngClass]="item.color" [style.width.%]="item.percentage"></div>
 						</div>
-						<div class="muted" style="display:flex; justify-content:space-between; font-size:0.8rem;">
+						<div class="muted muted-row">
 							<span>{{ item.percentage }}%</span>
 						</div>
 					</div>
@@ -59,8 +60,8 @@
 		<!-- Top Endpoints -->
 			<div class="card">
 			<div class="card-padding">
-				<h3 style="font-size:1.1rem; font-weight:700; margin:0 0 0.25rem;">Top Endpoints</h3>
-				<p class="muted" style="margin:0 0 0.75rem;">Most frequently tested API endpoints</p>
+				<h3 class="small-strong h3-compact">Top Endpoints</h3>
+				<p class="muted mb-075">Most frequently tested API endpoints</p>
 
 					<div class="space-y" *ngIf="topEndpoints?.length; else noTop">
 						<div *ngFor="let ep of topEndpoints; let i = index" class="row-item">
@@ -79,10 +80,10 @@
 	</div>
 
 	<!-- Performance Trends -->
-	<div class="card" style="margin-top:1.25rem;">
+	<div class="card card-mt">
 		<div class="card-padding">
-			<h3 style="font-size:1.1rem; font-weight:700; margin:0 0 0.25rem;">Performance Trends</h3>
-			<p class="muted" style="margin:0 0 0.75rem;">Request volume and response time trends over time</p>
+			<h3 class="small-strong h3-compact">Performance Trends</h3>
+			<p class="muted mb-075">Request volume and response time trends over time</p>
 
 			<div class="tabs">
 				<button class="tab" [class.active]="activeTab==='requests'" (click)="setTab('requests')">Request Volume</button>

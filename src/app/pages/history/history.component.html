@@ -1,19 +1,20 @@
-<div class="container" style="padding:2rem 1rem;">
-	<div style="margin-bottom:1rem;">
-		<h1 style="font-size:1.75rem; font-weight:700; margin:0;">Request History</h1>
-		<p class="muted" style="margin-top:0.35rem;">View and manage all your API request history</p>
+
+<div class="container">
+	<div class="header">
+		<h1 class="title">Request History</h1>
+		<p class="muted subtitle">View and manage all your API request history</p>
 	</div>
 
-	<div class="card" style="margin-bottom:1rem;">
-		<div class="card-padding" style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between;">
-			<div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+	<div class="card mb-1">
+		<div class="card-padding toolbar">
+			<div class="controls">
 				<div class="relative">
-					<input placeholder="Search requests..." style="padding:0.5rem 0.75rem; padding-left:2.5rem; border:1px solid var(--border); border-radius:0.375rem; min-width: 220px;" class="pl10" />
-					<span class="icon left" style="left:0.5rem;">
+					<input placeholder="Search requests..." class="input pl10" />
+					<span class="icon left">
 						<img src="/search.svg" alt="" width="16" height="16" />
 					</span>
 				</div>
-				<select style="padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:0.375rem;">
+				<select class="select">
 					<option>All Methods</option>
 					<option>GET</option>
 					<option>POST</option>
@@ -21,7 +22,7 @@
 					<option>PATCH</option>
 					<option>DELETE</option>
 				</select>
-				<select style="padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:0.375rem;">
+				<select class="select">
 					<option>All Status</option>
 					<option>2xx Success</option>
 					<option>3xx Redirect</option>
@@ -34,7 +35,7 @@
 	</div>
 
 	<div class="card">
-		<div class="card-padding" style="overflow:auto;">
+		<div class="card-padding scroll">
 			<table *ngIf="entries.length; else empty" class="hist-table">
 				<thead>
 					<tr>
@@ -56,7 +57,7 @@
 				</tbody>
 			</table>
 			<ng-template #empty>
-				<p class="muted" style="text-align:center; padding: 1.5rem 0;">No requests yet.</p>
+				<p class="muted centered">No requests yet.</p>
 			</ng-template>
 		</div>
 	</div>

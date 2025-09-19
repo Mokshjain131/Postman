@@ -31,7 +31,6 @@ export class RegisterComponent {
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
-      // Navigate to dashboard if desired
     }, 1500);
   }
 }
