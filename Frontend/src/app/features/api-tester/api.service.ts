@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { HistoryService } from '../history/history.service';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
@@ -24,7 +25,8 @@ export interface ApiResponseDto {
   providedIn: 'root'
 })
 export class ApiService {
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly historyService = inject(HistoryService);
 
   async send(request: ApiRequestDto): Promise<ApiResponseDto> {
     const start = performance.now();
@@ -50,7 +52,7 @@ export class ApiService {
         // keep as text
       }
 
-      return {
+      const response: ApiResponseDto = {
         ok: resp.ok,
         status: resp.status,
         statusText: resp.statusText,
@@ -58,6 +60,17 @@ export class ApiService {
         body: parsed,
         durationMs,
       };
+
+      // Save to history (async, don't wait)
+      this.historyService.add({
+        ts: Date.now(),
+        method: request.method,
+        url: request.url,
+        status: resp.status,
+        durationMs
+      }).catch(err => console.error('Failed to save to history:', err));
+
+      return response;
     } catch (error: any) {
       const durationMs = Math.round(performance.now() - start);
       const status = error.status ?? 0;
@@ -70,7 +83,26 @@ export class ApiService {
       try {
         body = typeof body === 'string' ? JSON.parse(body) : body;
       } catch {}
-      return { ok: false, status, statusText, headers: headersObj, body, durationMs };
+
+      const response: ApiResponseDto = { 
+        ok: false, 
+        status, 
+        statusText, 
+        headers: headersObj, 
+        body, 
+        durationMs 
+      };
+
+      // Save error to history too (async, don't wait)
+      this.historyService.add({
+        ts: Date.now(),
+        method: request.method,
+        url: request.url,
+        status,
+        durationMs
+      }).catch(err => console.error('Failed to save to history:', err));
+
+      return response;
     }
   }
 }

@@ -36,7 +36,11 @@
 
 	<div class="card">
 		<div class="card-padding scroll">
-			@if (entries.length) {
+			@if (isLoading) {
+				<p class="muted centered">Loading history...</p>
+			} @else if (errorMessage) {
+				<p class="error centered">{{ errorMessage }}</p>
+			} @else if (entries.length) {
 			<table class="hist-table">
 				<thead>
 					<tr>
@@ -45,20 +49,28 @@
 						<th>Status</th>
 						<th>Time</th>
 						<th>Timestamp</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					@for (e of entries; track e) {
+					@for (e of entries; track e.id || e.ts) {
+					<tr>
 						<td><span class="badge" [ngClass]="'text-method-' + e.method.toLowerCase()">{{ e.method }}</span></td>
 						<td class="url">{{ e.url }}</td>
-						<td>{{ e.status }}</td>
+						<td><span class="badge" [ngClass]="statusClass(e.status)">{{ e.status }}</span></td>
 						<td>{{ e.durationMs }} ms</td>
 						<td>{{ e.ts | date:'short' }}</td>
+						<td>
+							<button class="btn-icon" (click)="deleteEntry(e.id)" title="Delete entry">
+								<span>🗑️</span>
+							</button>
+						</td>
+					</tr>
 					}
 				</tbody>
 			</table>
 			} @else {
-				<p class="muted centered">No requests yet.</p>
+				<p class="muted centered">No requests yet. Start making API calls to see history here.</p>
 			}
 		</div>
 	</div>
