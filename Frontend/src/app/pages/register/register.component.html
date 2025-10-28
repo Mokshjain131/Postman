@@ -74,7 +74,21 @@
 													}
 						</div>
 
-												<button type="submit" class="btn grad w-full" [disabled]="isLoading || registerForm.invalid || passwordMismatch">
+						<!-- Success message -->
+						@if (success) {
+							<div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
+								{{ success }}
+							</div>
+						}
+
+						<!-- Error message -->
+						@if (error) {
+							<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+								{{ error }}
+							</div>
+						}
+
+						<button type="submit" class="btn grad w-full" [disabled]="isLoading || registerForm.invalid || passwordMismatch">
 							@if (isLoading) { <span class="spinner"></span> }
 							{{ isLoading ? 'Creating account...' : 'Create Account' }}
 						</button>

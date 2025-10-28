@@ -5,14 +5,14 @@
 			<h1 class="title">General Analytics</h1>
 			<p class="muted subtitle">Overview of your API testing activity and performance metrics</p>
 		</div>
-			<div>
-				<select class="input minw-10rem" [(ngModel)]="timeRange" (change)="recompute()">
-					<option value="7d">Last 7 days</option>
-					<option value="30d">Last 30 days</option>
-					<option value="90d">Last 90 days</option>
-					<option value="1y">Last year</option>
-					<option value="all">All time</option>
-				</select>
+		<div>
+			<select class="input minw-10rem" [(ngModel)]="timeRange" (change)="onTimeRangeChange()">
+				<option value="7d">Last 7 days</option>
+				<option value="30d">Last 30 days</option>
+				<option value="90d">Last 90 days</option>
+				<option value="1y">Last year</option>
+				<option value="all">All time</option>
+			</select>
 			</div>
 	</div>
 

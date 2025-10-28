@@ -2,13 +2,66 @@
 	width: 100%;
 	border-collapse: collapse;
 	min-width: 720px;
+	table-layout: fixed;
+}
+
+.hist-table thead {
+	background-color: #f9fafb;
 }
 
 .hist-table th,
 .hist-table td {
 	text-align: left;
-	border-bottom: 1px solid #f3f4f6;
-	padding: 0.5rem;
+	border-bottom: 1px solid #e5e7eb;
+	padding: 0.75rem 0.5rem;
+	vertical-align: middle;
+}
+
+.hist-table th {
+	font-weight: 600;
+	color: #374151;
+	font-size: 0.875rem;
+	text-transform: uppercase;
+}
+
+.hist-table tbody tr {
+	transition: background-color 0.15s;
+}
+
+.hist-table tbody tr:hover {
+	background-color: #f9fafb;
+}
+
+.hist-table th:nth-child(1),
+.hist-table td:nth-child(1) {
+	width: 100px;
+}
+
+.hist-table th:nth-child(2),
+.hist-table td:nth-child(2) {
+	width: auto;
+	min-width: 200px;
+}
+
+.hist-table th:nth-child(3),
+.hist-table td:nth-child(3) {
+	width: 100px;
+}
+
+.hist-table th:nth-child(4),
+.hist-table td:nth-child(4) {
+	width: 100px;
+}
+
+.hist-table th:nth-child(5),
+.hist-table td:nth-child(5) {
+	width: 150px;
+}
+
+.hist-table th:nth-child(6),
+.hist-table td:nth-child(6) {
+	width: 80px;
+	text-align: center;
 }
 
 .url {

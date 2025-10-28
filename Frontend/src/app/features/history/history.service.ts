@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 export interface HistoryEntry {
   id?: number;
@@ -10,127 +10,112 @@ export interface HistoryEntry {
   url: string;
   status: number;
   durationMs: number;
-  created_at?: string;
+  request?: {
+    headers?: Record<string, string>;
+    body?: any;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class HistoryService {
-  private readonly http = inject(HttpClient);
-  private readonly authService = inject(AuthService);
-  private readonly apiUrl = 'http://localhost:3000/api/history';
-  private cache: HistoryEntry[] = [];
-  private cacheTime = 0;
-  private readonly CACHE_DURATION = 5000; // 5 seconds
+  private apiUrl = 'http://localhost:3000/api/history';
+  private cacheSubject = new BehaviorSubject<HistoryEntry[]>([]);
+  public cache$ = this.cacheSubject.asObservable();
 
-  async add(entry: HistoryEntry): Promise<void> {
-    if (!this.authService.isLoggedIn()) {
-      console.warn('User not logged in, history not saved');
-      return;
-    }
-
-    try {
-      await firstValueFrom(
-        this.http.post(this.apiUrl, {
-          url: entry.url,
-          method: entry.method,
-          status: entry.status,
-          durationMs: entry.durationMs,
-          timestamp: entry.ts
-        }, {
-          headers: this.authService.getAuthHeaders()
-        })
-      );
-      
-      // Invalidate cache
-      this.cacheTime = 0;
-    } catch (error) {
-      console.error('Failed to save history to backend:', error);
-    }
+  constructor(private http: HttpClient) {
+    // Load initial data
+    this.loadHistory();
   }
 
-  async list(): Promise<HistoryEntry[]> {
-    if (!this.authService.isLoggedIn()) {
-      return [];
-    }
+  // Add to history (send to backend)
+  add(entry: HistoryEntry): Observable<any> {
+    const payload = {
+      url: entry.url,
+      method: entry.method,
+      status: entry.status,
+      durationMs: entry.durationMs,
+      timestamp: entry.ts
+    };
 
-    // Return cached data if fresh
-    const now = Date.now();
-    if (this.cache.length > 0 && (now - this.cacheTime) < this.CACHE_DURATION) {
-      return this.cache;
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.http.get<HistoryEntry[]>(this.apiUrl, {
-          headers: this.authService.getAuthHeaders()
-        })
-      );
-      
-      this.cache = response;
-      this.cacheTime = now;
-      return response;
-    } catch (error) {
-      console.error('Failed to fetch history from backend:', error);
-      return [];
-    }
+    return this.http.post(this.apiUrl, payload).pipe(
+      tap(() => {
+        // Update local cache
+        const current = this.cacheSubject.value;
+        current.unshift(entry);
+        this.cacheSubject.next(current);
+      }),
+      catchError(error => {
+        console.error('Failed to save history:', error);
+        throw error;
+      })
+    );
   }
 
-  async clear(): Promise<void> {
-    if (!this.authService.isLoggedIn()) {
-      return;
-    }
-
-    try {
-      await firstValueFrom(
-        this.http.delete(this.apiUrl, {
-          headers: this.authService.getAuthHeaders()
-        })
-      );
-      
-      this.cache = [];
-      this.cacheTime = 0;
-    } catch (error) {
-      console.error('Failed to clear history:', error);
-      throw error;
-    }
+  // Get history from backend
+  list(): Observable<HistoryEntry[]> {
+    return this.http.get<HistoryEntry[]>(this.apiUrl).pipe(
+      tap(history => this.cacheSubject.next(history)),
+      catchError(error => {
+        console.error('Failed to load history:', error);
+        this.cacheSubject.next([]);
+        throw error;
+      })
+    );
   }
 
-  async deleteEntry(id: number): Promise<void> {
-    if (!this.authService.isLoggedIn()) {
-      return;
-    }
-
-    try {
-      await firstValueFrom(
-        this.http.delete(`${this.apiUrl}/${id}`, {
-          headers: this.authService.getAuthHeaders()
-        })
-      );
-      
-      // Invalidate cache
-      this.cacheTime = 0;
-    } catch (error) {
-      console.error('Failed to delete history entry:', error);
-      throw error;
-    }
+  // Load history (called on init)
+  private loadHistory(): void {
+    this.list().subscribe();
   }
 
-  async getAnalytics(startDate: number = 0): Promise<any> {
-    if (!this.authService.isLoggedIn()) {
-      return null;
-    }
+  // Get cached data synchronously (for immediate display)
+  getCached(): HistoryEntry[] {
+    return this.cacheSubject.value;
+  }
 
-    try {
-      const response = await firstValueFrom(
-        this.http.get(`${this.apiUrl}/analytics`, {
-          params: { startDate: startDate.toString() },
-          headers: this.authService.getAuthHeaders()
-        })
-      );
-      return response;
-    } catch (error) {
-      console.error('Failed to fetch analytics:', error);
-      return null;
+  // Clear history
+  clear(): Observable<any> {
+    return this.http.delete(this.apiUrl).pipe(
+      tap(() => this.cacheSubject.next([])),
+      catchError(error => {
+        console.error('Failed to clear history:', error);
+        throw error;
+      })
+    );
+  }
+
+  // Delete specific entry
+  deleteEntry(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        const current = this.cacheSubject.value.filter(item => item.id !== id);
+        this.cacheSubject.next(current);
+      }),
+      catchError(error => {
+        console.error('Failed to delete entry:', error);
+        throw error;
+      })
+    );
+  }
+
+  // Get filtered history
+  getFiltered(filters: {
+    startDate?: number;
+    endDate?: number;
+    method?: string;
+    minStatus?: number;
+    maxStatus?: number;
+  }): Observable<HistoryEntry[]> {
+    return this.http.get<HistoryEntry[]>(`${this.apiUrl}/filter`, { params: filters as any });
+  }
+
+  // Get analytics
+  getAnalytics(startDate?: number): Observable<any> {
+    const params: Record<string, string> = {};
+    if (startDate) {
+      params['startDate'] = startDate.toString();
     }
+    return this.http.get(`${this.apiUrl}/analytics`, { params });
   }
 }
+

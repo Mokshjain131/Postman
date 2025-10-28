@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HistoryService, HistoryEntry } from '../../features/history/history.service';
 
@@ -9,66 +9,61 @@ import { HistoryService, HistoryEntry } from '../../features/history/history.ser
   styleUrl: './history.component.css'
 })
 export class HistoryComponent implements OnInit {
-  private readonly history = inject(HistoryService);
-  
   entries: HistoryEntry[] = [];
   isLoading = false;
-  errorMessage = '';
+  error = '';
 
-  async ngOnInit() {
-    await this.refresh();
+  constructor(private history: HistoryService) {}
+
+  ngOnInit() {
+    this.refresh();
   }
 
-  async refresh() {
+  refresh() {
     this.isLoading = true;
-    this.errorMessage = '';
+    this.error = '';
     
-    try {
-      this.entries = await this.history.list();
-    } catch (error: any) {
-      this.errorMessage = 'Failed to load history';
-      console.error('Error loading history:', error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.history.list().subscribe({
+      next: (data) => {
+        this.entries = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load history';
+        this.isLoading = false;
+        console.error('Failed to load history:', err);
+      }
+    });
   }
 
-  async clear() {
-    if (!confirm('Are you sure you want to clear all history?')) {
-      return;
-    }
-
+  clear() {
+    if (!confirm('Are you sure you want to clear all history?')) return;
+    
     this.isLoading = true;
-    this.errorMessage = '';
-
-    try {
-      await this.history.clear();
-      await this.refresh();
-    } catch (error: any) {
-      this.errorMessage = 'Failed to clear history';
-      console.error('Error clearing history:', error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.history.clear().subscribe({
+      next: () => {
+        this.entries = [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to clear history';
+        this.isLoading = false;
+        console.error('Failed to clear history:', err);
+      }
+    });
   }
 
-  async deleteEntry(id: number | undefined) {
-    if (!id) return;
+  deleteEntry(id: number) {
+    if (!confirm('Are you sure you want to delete this entry?')) return;
     
-    try {
-      await this.history.deleteEntry(id);
-      await this.refresh();
-    } catch (error: any) {
-      this.errorMessage = 'Failed to delete entry';
-      console.error('Error deleting entry:', error);
-    }
-  }
-
-  statusClass(status: number): string {
-    if (status >= 200 && status < 300) return 'status-success';
-    if (status >= 300 && status < 400) return 'status-redirect';
-    if (status >= 400 && status < 500) return 'status-client-error';
-    if (status >= 500) return 'status-server-error';
-    return '';
+    this.history.deleteEntry(id).subscribe({
+      next: () => {
+        this.entries = this.entries.filter(e => e.id !== id);
+      },
+      error: (err) => {
+        this.error = 'Failed to delete entry';
+        console.error('Failed to delete entry:', err);
+      }
+    });
   }
 }
