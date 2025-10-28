@@ -11,6 +11,13 @@
 				<p class="card-desc">Enter your credentials to access your account</p>
 			</div>
 			<div class="card-content">
+								<!-- Error message display -->
+								@if (errorMessage) {
+									<div class="alert alert-error" style="background: #fee; border: 1px solid #fcc; padding: 12px; border-radius: 6px; margin-bottom: 16px; color: #c33;">
+										{{ errorMessage }}
+									</div>
+								}
+
 								<form #loginForm="ngForm" (ngSubmit)="handleLogin(loginForm)" class="form" novalidate>
 					<div class="field">
 						<label for="email">Email</label>

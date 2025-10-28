@@ -66,6 +66,8 @@ export class ApiRequestComponent implements OnInit {
     try {
       this.response = await this.api.send(req);
       this.saveLast(req);
+      
+      // Save to backend history (async, don't wait)
       this.history.add({
         ts: Date.now(),
         method: req.method,
@@ -73,7 +75,8 @@ export class ApiRequestComponent implements OnInit {
         status: this.response.status,
         durationMs: this.response.durationMs,
         request: { headers: req.headers, body: req.body },
-      });
+      }).catch(err => console.error('Failed to save history:', err));
+      
     } catch (e: any) {
       this.errorText = e?.message || 'Request failed';
     } finally {

@@ -33,15 +33,15 @@ export class GeneralAnalyticsComponent implements OnInit {
     }
   }
 
-  recompute() {
-    const all = this.history.list();
+  async recompute() {
+    const all = await this.history.list();
     const start = this.rangeStartMs();
-    const current = all.filter(e => e.ts >= start);
+    const current = all.filter((e: HistoryEntry) => e.ts >= start);
 
     // previous equal window for change calculation
     const windowMs = Math.max(Date.now() - start, 0);
     const prevStart = Math.max(start - windowMs, 0);
-    const previous = all.filter(e => e.ts >= prevStart && e.ts < start);
+    const previous = all.filter((e: HistoryEntry) => e.ts >= prevStart && e.ts < start);
 
     const fmtPct = (n: number) => `${(isFinite(n)? n : 0).toFixed(1)}%`;
     const fmtMs = (ms: number) => ms >= 1000 ? `${(ms/1000).toFixed(1)}s` : `${Math.round(ms)}ms`;
@@ -49,12 +49,12 @@ export class GeneralAnalyticsComponent implements OnInit {
 
     const curTotal = current.length;
     const prevTotal = previous.length;
-    const curSuccess = current.filter(e => e.status >= 200 && e.status < 300).length;
-    const prevSuccess = previous.filter(e => e.status >= 200 && e.status < 300).length;
-    const curError = current.filter(e => e.status >= 400 && e.status < 600).length;
-    const prevError = previous.filter(e => e.status >= 400 && e.status < 600).length;
-    const curAvg = avg(current.map(e => e.durationMs));
-    const prevAvg = avg(previous.map(e => e.durationMs));
+    const curSuccess = current.filter((e: HistoryEntry) => e.status >= 200 && e.status < 300).length;
+    const prevSuccess = previous.filter((e: HistoryEntry) => e.status >= 200 && e.status < 300).length;
+    const curError = current.filter((e: HistoryEntry) => e.status >= 400 && e.status < 600).length;
+    const prevError = previous.filter((e: HistoryEntry) => e.status >= 400 && e.status < 600).length;
+    const curAvg = avg(current.map((e: HistoryEntry) => e.durationMs));
+    const prevAvg = avg(previous.map((e: HistoryEntry) => e.durationMs));
 
     const rate = (num:number, den:number) => den ? (num/den)*100 : 0;
     const change = (cur:number, prev:number) => prev ? ((cur - prev) / Math.abs(prev)) * 100 : 0;
@@ -101,7 +101,7 @@ export class GeneralAnalyticsComponent implements OnInit {
       { label:'5xx Server Error', color:'status-server-error', match:(s:number)=>s>=500&&s<600 },
     ];
     this.statusDistribution = buckets.map(b => {
-      const count = current.filter(e => b.match(e.status)).length;
+      const count = current.filter((e: HistoryEntry) => b.match(e.status)).length;
       return { status: b.label, count, percentage: curTotal ? +(count/curTotal*100).toFixed(1) : 0, color: b.color };
     });
 
@@ -114,8 +114,8 @@ export class GeneralAnalyticsComponent implements OnInit {
       arr.push(e); map.set(path, arr);
     }
     const rows = Array.from(map.entries()).map(([endpoint, arr]) => {
-      const avgMs = avg(arr.map(a=>a.durationMs));
-      const errs = arr.filter(a=>a.status>=400&&a.status<600).length;
+      const avgMs = avg(arr.map((a: HistoryEntry)=>a.durationMs));
+      const errs = arr.filter((a: HistoryEntry)=>a.status>=400&&a.status<600).length;
       return { endpoint, requests: arr.length, avgTime: fmtMs(avgMs), errorRate: fmtPct(rate(errs, arr.length)) };
     });
     this.topEndpoints = rows.sort((a,b)=> b.requests - a.requests).slice(0,5);

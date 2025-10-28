@@ -59,8 +59,8 @@ export class ApiAnalyticsComponent implements OnInit {
     }
   }
 
-  recompute(){
-    this.all = this.history.list().filter(e => e.ts >= this.rangeStartMs());
+  async recompute(){
+    this.all = (await this.history.list()).filter((e: HistoryEntry) => e.ts >= this.rangeStartMs());
     // group by endpoint+method
     const groups = new Map<string, HistoryEntry[]>();
     for (const e of this.all){
@@ -83,10 +83,10 @@ export class ApiAnalyticsComponent implements OnInit {
       let path = key.split('__')[0];
       const method = arr[0]?.method || 'GET';
       const total = arr.length;
-      const successes = arr.filter(e=>e.status>=200&&e.status<300).length;
-      const errors = arr.filter(e=>e.status>=400&&e.status<600).length;
-      const avgMs = avg(arr.map(e=>e.durationMs));
-      const p95Ms = p95(arr.map(e=>e.durationMs));
+      const successes = arr.filter((e: HistoryEntry)=>e.status>=200&&e.status<300).length;
+      const errors = arr.filter((e: HistoryEntry)=>e.status>=400&&e.status<600).length;
+      const avgMs = avg(arr.map((e: HistoryEntry)=>e.durationMs));
+      const p95Ms = p95(arr.map((e: HistoryEntry)=>e.durationMs));
       const lastTs = arr.reduce((m,e)=> Math.max(m,e.ts), 0);
       return { endpoint: path, method, totalRequests: total, successRate: total? +(successes/total*100).toFixed(1) : 0, avgResponseTime: Math.round(avgMs), p95ResponseTime: p95Ms, errorCount: errors, lastCalled: toAgo(lastTs) };
     });

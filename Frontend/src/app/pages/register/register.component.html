@@ -11,6 +11,18 @@
 				<p class="card-desc">Create your account to get started</p>
 			</div>
 			<div class="card-content">
+								<!-- Error/Success message display -->
+								@if (errorMessage) {
+									<div class="alert alert-error" style="background: #fee; border: 1px solid #fcc; padding: 12px; border-radius: 6px; margin-bottom: 16px; color: #c33;">
+										{{ errorMessage }}
+									</div>
+								}
+								@if (successMessage) {
+									<div class="alert alert-success" style="background: #efe; border: 1px solid #cfc; padding: 12px; border-radius: 6px; margin-bottom: 16px; color: #3c3;">
+										{{ successMessage }}
+									</div>
+								}
+
 								<form #registerForm="ngForm" (ngSubmit)="handleRegister(registerForm)" class="form" novalidate>
 					<div class="field">
 						<label for="name">Full Name</label>
