@@ -1,0 +1,88 @@
+const express = require('express');
+const router = express.Router();
+const historyService = require('../services/history.service');
+const { authenticateToken } = require('../middleware/auth.middleware');
+
+// All routes require authentication
+router.use(authenticateToken);
+
+// Save request to history
+router.post('/', async (req, res) => {
+  try {
+    const result = await historyService.saveRequest(req.user.userId, req.body);
+    res.json(result);
+  } catch (error) {
+    console.error('Save history error:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Get request history
+router.get('/', async (req, res) => {
+  try {
+    const options = {
+      limit: parseInt(req.query.limit) || 1000,
+      offset: parseInt(req.query.offset) || 0
+    };
+    const history = await historyService.getHistory(req.user.userId, options);
+    res.json(history);
+  } catch (error) {
+    console.error('Get history error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get filtered history
+router.get('/filter', async (req, res) => {
+  try {
+    const filters = {
+      startDate: req.query.startDate ? parseInt(req.query.startDate) : undefined,
+      endDate: req.query.endDate ? parseInt(req.query.endDate) : undefined,
+      method: req.query.method,
+      minStatus: req.query.minStatus ? parseInt(req.query.minStatus) : undefined,
+      maxStatus: req.query.maxStatus ? parseInt(req.query.maxStatus) : undefined
+    };
+    const history = await historyService.getFilteredHistory(req.user.userId, filters);
+    res.json(history);
+  } catch (error) {
+    console.error('Filter history error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get history analytics
+router.get('/analytics', async (req, res) => {
+  try {
+    const startDate = req.query.startDate ? parseInt(req.query.startDate) : 0;
+    const analytics = await historyService.getAnalytics(req.user.userId, startDate);
+    res.json(analytics);
+  } catch (error) {
+    console.error('Get analytics error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Clear history
+router.delete('/', async (req, res) => {
+  try {
+    const result = await historyService.clearHistory(req.user.userId);
+    res.json(result);
+  } catch (error) {
+    console.error('Clear history error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete specific history entry
+router.delete('/:id', async (req, res) => {
+  try {
+    const historyId = parseInt(req.params.id);
+    const result = await historyService.deleteEntry(req.user.userId, historyId);
+    res.json(result);
+  } catch (error) {
+    console.error('Delete history error:', error);
+    res.status(404).json({ error: error.message });
+  }
+});
+
+module.exports = router;
