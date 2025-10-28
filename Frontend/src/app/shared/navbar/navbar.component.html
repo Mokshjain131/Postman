@@ -17,12 +17,7 @@
 		<li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
 	</ul>
 	<div class="auth">
-		@if (currentUser$ | async; as user) {
-			<span class="text-gray-700 mr-4">{{ user.name || user.email }}</span>
-			<button (click)="logout()" class="btn primary">Logout</button>
-		} @else {
-			<a routerLink="/login" class="btn">Login</a>
-			<a routerLink="/register" class="btn primary">Sign up</a>
-		}
+		<a routerLink="/login" class="btn">Login</a>
+		<a routerLink="/register" class="btn primary">Sign up</a>
 	</div>
 </nav>

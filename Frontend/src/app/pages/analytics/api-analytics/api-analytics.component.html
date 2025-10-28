@@ -35,30 +35,30 @@
 			<h3 class="small-strong h3-compact mb-075">Filters</h3>
 			<div class="grid grid-4 filters">
 				<div class="relative">
-					<input class="input pl10" [(ngModel)]="q" (input)="onFilterChange()" placeholder="Search endpoints..." />
+					<input class="input pl10" [(ngModel)]="q" (input)="recompute()" placeholder="Search endpoints..." />
 					<span class="icon left left-075">
 						<img src="/search.svg" alt="" width="16" height="16" />
 					</span>
 				</div>
-							<select class="input" [(ngModel)]="method" (change)="onFilterChange()">
+							<select class="input" [(ngModel)]="method" (change)="recompute()">
 								<option value="all">All Methods</option>
 								<option value="GET">GET</option>
 								<option value="POST">POST</option>
 								<option value="PUT">PUT</option>
-							<option value="DELETE">DELETE</option>
-			</select>
-						<select class="input" [(ngModel)]="perf" (change)="onFilterChange()">
-							<option value="all">All Performance</option>
-							<option value="fast">Fast (&lt;200ms)</option>
-							<option value="medium">Medium (200-500ms)</option>
-							<option value="slow">Slow (&gt;500ms)</option>
-			</select>
-						<select class="input" [(ngModel)]="range" (change)="onFilterChange()">
-							<option value="1d">Last 24 hours</option>
-							<option value="7d">Last 7 days</option>
-							<option value="30d">Last 30 days</option>
-							<option value="all">All time</option>
-			</select>
+								<option value="DELETE">DELETE</option>
+				</select>
+							<select class="input" [(ngModel)]="perf" (change)="recompute()">
+								<option value="all">All Performance</option>
+								<option value="fast">Fast (&lt;200ms)</option>
+								<option value="medium">Medium (200-500ms)</option>
+								<option value="slow">Slow (&gt;500ms)</option>
+				</select>
+							<select class="input" [(ngModel)]="range" (change)="recompute()">
+								<option value="1d">Last 24 hours</option>
+								<option value="7d">Last 7 days</option>
+								<option value="30d">Last 30 days</option>
+								<option value="all">All time</option>
+				</select>
 			</div>
 		</div>
 	</div>

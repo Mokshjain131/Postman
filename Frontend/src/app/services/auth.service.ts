@@ -1,22 +1,21 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
-interface User {
+export interface User {
   id: number;
   email: string;
   name: string;
 }
 
-interface AuthResponse {
+export interface LoginResponse {
   success: boolean;
   token: string;
   user: User;
 }
 
-interface RegisterResponse {
+export interface RegisterResponse {
   success: boolean;
   message: string;
   userId: number;
@@ -24,75 +23,145 @@ interface RegisterResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
-  private tokenKey = 'auth_token';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly apiUrl = 'http://localhost:3000/api';
+  
+  // Reactive signal for current user
+  currentUser = signal<User | null>(null);
+  isAuthenticated = signal<boolean>(false);
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.loadUser();
+  constructor() {
+    // Load user from localStorage on init
+    this.loadUserFromStorage();
   }
 
-  register(email: string, password: string, name: string): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, { email, password, name });
-  }
-
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
-      .pipe(tap(response => {
-        localStorage.setItem(this.tokenKey, response.token);
-        this.currentUserSubject.next(response.user);
-      }));
-  }
-
-  logout(): void {
+  private loadUserFromStorage() {
     const token = this.getToken();
-    if (token) {
-      this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
-        next: () => {
-          this.clearSession();
-        },
-        error: () => {
-          this.clearSession();
-        }
-      });
-    } else {
-      this.clearSession();
+    const userStr = localStorage.getItem('currentUser');
+    
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        this.currentUser.set(user);
+        this.isAuthenticated.set(true);
+      } catch {
+        this.logout();
+      }
     }
   }
 
-  private clearSession(): void {
-    localStorage.removeItem(this.tokenKey);
-    this.currentUserSubject.next(null);
+  async register(email: string, password: string, name: string): Promise<RegisterResponse> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, {
+          email,
+          password,
+          name
+        })
+      );
+      return response;
+    } catch (error: any) {
+      throw new Error(error.error?.error || 'Registration failed');
+    }
+  }
+
+  async login(email: string, password: string): Promise<LoginResponse> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, {
+          email,
+          password
+        })
+      );
+
+      // Store token and user info
+      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+      
+      this.currentUser.set(response.user);
+      this.isAuthenticated.set(true);
+
+      return response;
+    } catch (error: any) {
+      throw new Error(error.error?.error || 'Login failed');
+    }
+  }
+
+  async logout(): Promise<void> {
+    const token = this.getToken();
+    
+    if (token) {
+      try {
+        await firstValueFrom(
+          this.http.post(`${this.apiUrl}/auth/logout`, {}, {
+            headers: this.getAuthHeaders()
+          })
+        );
+      } catch (error) {
+        console.error('Logout API call failed:', error);
+      }
+    }
+
+    // Clear local storage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    
+    this.currentUser.set(null);
+    this.isAuthenticated.set(false);
+    
     this.router.navigate(['/login']);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
-
-  getCurrentUser(): Observable<{ user: User }> {
-    return this.http.get<{ user: User }>(`${this.apiUrl}/me`);
-  }
-
-  changePassword(oldPassword: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/change-password`, { oldPassword, newPassword });
-  }
-
-  private loadUser(): void {
-    if (this.isAuthenticated()) {
-      this.getCurrentUser().subscribe({
-        next: (response) => this.currentUserSubject.next(response.user),
-        error: () => this.clearSession()
-      });
+  async getCurrentUser(): Promise<User> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ user: User }>(`${this.apiUrl}/auth/me`, {
+          headers: this.getAuthHeaders()
+        })
+      );
+      
+      this.currentUser.set(response.user);
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+      
+      return response.user;
+    } catch (error: any) {
+      this.logout();
+      throw new Error(error.error?.error || 'Failed to get user');
     }
   }
 
-  getUserValue(): User | null {
-    return this.currentUserSubject.value;
+  async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.post(`${this.apiUrl}/auth/change-password`, {
+          oldPassword,
+          newPassword
+        }, {
+          headers: this.getAuthHeaders()
+        })
+      );
+      
+      // Logout after password change
+      await this.logout();
+    } catch (error: any) {
+      throw new Error(error.error?.error || 'Failed to change password');
+    }
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  isLoggedIn(): boolean {
+    return this.isAuthenticated();
   }
 }

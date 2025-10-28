@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -11,6 +11,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   showPassword = false;
   showConfirmPassword = false;
   formData = {
@@ -21,16 +24,12 @@ export class RegisterComponent {
   };
   isLoading = false;
   passwordMismatch = false;
-  error = '';
-  success = '';
+  errorMessage = '';
+  successMessage = '';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  handleRegister(form: NgForm) {
+  async handleRegister(form: NgForm) {
     if (this.isLoading) return;
+    
     this.passwordMismatch = this.formData.password !== this.formData.confirmPassword;
     if (form.invalid || this.passwordMismatch) {
       form.control.markAllAsTouched();
@@ -38,27 +37,27 @@ export class RegisterComponent {
     }
     
     this.isLoading = true;
-    this.error = '';
-    this.success = '';
+    this.errorMessage = '';
+    this.successMessage = '';
 
-    this.authService.register(
-      this.formData.email,
-      this.formData.password,
-      this.formData.name
-    ).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.success = 'Registration successful! Redirecting to login...';
-        console.log('Registration successful:', response);
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.error = err.error?.error || 'Registration failed. Please try again.';
-        console.error('Registration error:', err);
-      }
-    });
+    try {
+      await this.authService.register(
+        this.formData.email,
+        this.formData.password,
+        this.formData.name
+      );
+      
+      this.successMessage = 'Registration successful! Redirecting to login...';
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000);
+      
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Registration failed. Please try again.';
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

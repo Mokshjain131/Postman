@@ -50,14 +50,7 @@
 						<a routerLink="/forgot-password" class="link">Forgot password?</a>
 					</div>
 
-					<!-- Error message -->
-					@if (error) {
-						<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-							{{ error }}
-						</div>
-					}
-
-					<button type="submit" class="btn grad w-full" [disabled]="isLoading || loginForm.invalid">
+										<button type="submit" class="btn grad w-full" [disabled]="isLoading || loginForm.invalid">
 						@if (isLoading) { <span class="spinner"></span> }
 						{{ isLoading ? 'Signing in...' : 'Sign In' }}
 					</button>

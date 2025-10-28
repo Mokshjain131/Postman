@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -11,18 +11,16 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   showPassword = false;
   email = '';
   password = '';
   isLoading = false;
-  error = '';
+  errorMessage = '';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  handleLogin(form: NgForm) {
+  async handleLogin(form: NgForm) {
     if (this.isLoading) return;
     if (form.invalid) {
       form.control.markAllAsTouched();
@@ -30,19 +28,16 @@ export class LoginComponent {
     }
     
     this.isLoading = true;
-    this.error = '';
+    this.errorMessage = '';
 
-    this.authService.login(this.email, this.password).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        console.log('Login successful:', response);
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.error = err.error?.error || 'Login failed. Please check your credentials.';
-        console.error('Login error:', err);
-      }
-    });
+    try {
+      await this.authService.login(this.email, this.password);
+      // Navigate to dashboard on success
+      this.router.navigate(['/dashboard']);
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Login failed. Please try again.';
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
