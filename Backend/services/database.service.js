@@ -109,10 +109,34 @@ class DatabaseService {
     }
   }
 
+  async createGuestUser() {
+    try {
+      // Check if guest user exists
+      const [users] = await this.pool.execute(
+        'SELECT id FROM users WHERE email = ?',
+        ['guest@localhost']
+      );
+      
+      if (users.length === 0) {
+        // Create guest user with id = 1
+        await this.pool.execute(
+          'INSERT INTO users (id, email, password_hash, name) VALUES (?, ?, ?, ?)',
+          [1, 'guest@localhost', 'no-password', 'Guest User']
+        );
+        console.log('✅ Guest user created');
+      } else {
+        console.log('✅ Guest user already exists');
+      }
+    } catch (error) {
+      console.error('❌ Guest user creation failed:', error.message);
+    }
+  }
+
   async initialize() {
     await this.createDatabase();
     await this.connect();
     await this.createTables();
+    await this.createGuestUser();
     console.log('✅ Database initialization complete');
   }
 

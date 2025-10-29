@@ -24,41 +24,45 @@ export interface ApiResponseDto {
   providedIn: 'root'
 })
 export class ApiService {
+  private readonly BACKEND_URL = 'http://localhost:3000/api/proxy';
+
   constructor(private http: HttpClient) {}
 
   async send(request: ApiRequestDto): Promise<ApiResponseDto> {
     const start = performance.now();
-    const headers = new HttpHeaders(request.headers || {});
+    
+    console.log('🚀 Sending request to backend:', this.BACKEND_URL);
+    console.log('📦 Request payload:', {
+      url: request.url,
+      method: request.method,
+      headers: request.headers || {},
+      body: request.body
+    });
+    
     try {
+      // Send request to backend proxy
       const resp = await firstValueFrom(
-        this.http.request(request.method, request.url, {
-          body: request.body,
-          headers,
-          observe: 'response',
-          responseType: 'text',
+        this.http.post<any>(this.BACKEND_URL, {
+          url: request.url,
+          method: request.method,
+          headers: request.headers || {},
+          body: request.body
         })
       );
 
+      console.log('✅ Backend response received:', resp);
       const durationMs = Math.round(performance.now() - start);
-      const h: Record<string, string> = {};
-      resp.headers.keys().forEach((k) => (h[k] = resp.headers.get(k) || ''));
-
-      let parsed: any = resp.body;
-      try {
-        parsed = resp.body ? JSON.parse(resp.body as string) : null;
-      } catch {
-        // keep as text
-      }
 
       return {
-        ok: resp.ok,
+        ok: resp.status >= 200 && resp.status < 300,
         status: resp.status,
-        statusText: resp.statusText,
-        headers: h,
-        body: parsed,
-        durationMs,
+        statusText: resp.statusText || 'OK',
+        headers: resp.headers || {},
+        body: resp.body,
+        durationMs: resp.duration || durationMs,
       };
     } catch (error: any) {
+      console.error('❌ Backend request failed:', error);
       const durationMs = Math.round(performance.now() - start);
       const status = error.status ?? 0;
       const statusText = error.statusText ?? 'Network error';

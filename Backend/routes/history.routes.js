@@ -3,11 +3,20 @@ const router = express.Router();
 const historyService = require('../services/history.service');
 const { authenticateToken } = require('../middleware/auth.middleware');
 
-// All routes require authentication
-router.use(authenticateToken);
+// Optional authentication - use guest user (id: 1) if not authenticated
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    // Use guest user
+    req.user = { userId: 1 };
+    return next();
+  }
+  // If token provided, validate it
+  authenticateToken(req, res, next);
+};
 
 // Save request to history
-router.post('/', async (req, res) => {
+router.post('/', optionalAuth, async (req, res) => {
   try {
     const result = await historyService.saveRequest(req.user.userId, req.body);
     res.json(result);
@@ -18,7 +27,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get request history
-router.get('/', async (req, res) => {
+router.get('/', optionalAuth, async (req, res) => {
   try {
     const options = {
       limit: parseInt(req.query.limit) || 1000,
@@ -33,7 +42,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get filtered history
-router.get('/filter', async (req, res) => {
+router.get('/filter', optionalAuth, async (req, res) => {
   try {
     const filters = {
       startDate: req.query.startDate ? parseInt(req.query.startDate) : undefined,
@@ -51,7 +60,7 @@ router.get('/filter', async (req, res) => {
 });
 
 // Get history analytics
-router.get('/analytics', async (req, res) => {
+router.get('/analytics', optionalAuth, async (req, res) => {
   try {
     const startDate = req.query.startDate ? parseInt(req.query.startDate) : 0;
     const analytics = await historyService.getAnalytics(req.user.userId, startDate);
@@ -63,7 +72,7 @@ router.get('/analytics', async (req, res) => {
 });
 
 // Clear history
-router.delete('/', async (req, res) => {
+router.delete('/', optionalAuth, async (req, res) => {
   try {
     const result = await historyService.clearHistory(req.user.userId);
     res.json(result);
@@ -74,7 +83,7 @@ router.delete('/', async (req, res) => {
 });
 
 // Delete specific history entry
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', optionalAuth, async (req, res) => {
   try {
     const historyId = parseInt(req.params.id);
     const result = await historyService.deleteEntry(req.user.userId, historyId);

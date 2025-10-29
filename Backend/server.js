@@ -6,6 +6,7 @@ const database = require('./services/database.service');
 const authRoutes = require('./routes/auth.routes');
 const historyRoutes = require('./routes/history.routes');
 const requestsRoutes = require('./routes/requests.routes');
+const proxyRoutes = require('./routes/proxy.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/requests', requestsRoutes);
+app.use('/api/proxy', proxyRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
