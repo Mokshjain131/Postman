@@ -18,7 +18,7 @@ export interface HistoryEntry {
 @Injectable({ providedIn: 'root' })
 export class HistoryService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:3000/api/history';
+  private readonly baseUrl = 'https://requestexplorerbackend.onrender.com/api/history';
 
   private getHeaders(): HttpHeaders {
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });

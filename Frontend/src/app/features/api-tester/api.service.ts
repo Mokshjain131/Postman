@@ -24,7 +24,7 @@ export interface ApiResponseDto {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly BACKEND_URL = 'http://localhost:3000/api/proxy';
+  private readonly BACKEND_URL = 'https://requestexplorerbackend.onrender.com/api/proxy';
 
   constructor(private http: HttpClient) {}
 

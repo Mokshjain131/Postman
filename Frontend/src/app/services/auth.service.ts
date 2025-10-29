@@ -20,7 +20,7 @@ export interface AuthResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly baseUrl = 'http://localhost:3000/api/auth';
+  private readonly baseUrl = 'https://requestexplorerbackend.onrender.com/api/auth';
   
   // Reactive state
   currentUser = signal<User | null>(null);

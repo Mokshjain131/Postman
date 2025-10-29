@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class HttpService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:3000/api';
+  private readonly baseUrl = 'https://requestexplorerbackend.onrender.com/api';
 
   private url(path: string): string {
     if (!path) return this.baseUrl;
