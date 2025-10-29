@@ -20,16 +20,16 @@
 
 								<form #loginForm="ngForm" (ngSubmit)="handleLogin(loginForm)" class="form" novalidate>
 					<div class="field">
-						<label for="email">Email</label>
-						<div class="relative">
-											<input id="email" name="email" type="email" placeholder="Enter your email" [(ngModel)]="email" class="input pl10" required email />
-						</div>
-										@if (loginForm.submitted && loginForm.controls['email']?.errors?.['required']) {
-											<p class="error">Email is required.</p>
-										}
-										@if (loginForm.submitted && loginForm.controls['email']?.errors?.['email']) {
-											<p class="error">Enter a valid email.</p>
-										}
+					<label for="email">Email</label>
+					<div class="relative">
+										<input id="email" name="email" type="email" placeholder="Enter your email" [(ngModel)]="email" class="input pl10" required email />
+					</div>
+									@if (loginForm.submitted && loginForm.controls['email'].errors?.['required']) {
+										<p class="error">Email is required.</p>
+									}
+									@if (loginForm.submitted && loginForm.controls['email'].errors?.['email']) {
+										<p class="error">Enter a valid email.</p>
+									}
 					</div>
 
 					<div class="field">
@@ -37,16 +37,16 @@
 						<div class="relative">
 							<span class="icon left"></span>
 											<input id="password" name="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password" [(ngModel)]="password" class="input pl10 pr10" required minlength="6" />
-							<button type="button" class="btn ghost icon-btn right" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
-								<img [src]="showPassword ? '/eye-password-see-view-svgrepo-com.svg' : '/eye-key-look-password-security-see-svgrepo-com.svg'" alt="" width="18" height="18" />
-							</button>
-						</div>
-										@if (loginForm.submitted && loginForm.controls['password']?.errors?.['required']) {
-											<p class="error">Password is required.</p>
-										}
-										@if (loginForm.submitted && loginForm.controls['password']?.errors?.['minlength']) {
-											<p class="error">Password must be at least 6 characters.</p>
-										}
+						<button type="button" class="btn ghost icon-btn right" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+							<img [src]="showPassword ? '/eye-password-see-view-svgrepo-com.svg' : '/eye-key-look-password-security-see-svgrepo-com.svg'" alt="" width="18" height="18" />
+						</button>
+					</div>
+									@if (loginForm.submitted && loginForm.controls['password'].errors?.['required']) {
+										<p class="error">Password is required.</p>
+									}
+									@if (loginForm.submitted && loginForm.controls['password'].errors?.['minlength']) {
+										<p class="error">Password must be at least 6 characters.</p>
+									}
 					</div>
 
 					<div class="row between">

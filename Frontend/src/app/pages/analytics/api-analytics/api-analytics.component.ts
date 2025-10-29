@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HistoryService, HistoryEntry } from '../../../features/history/history.service';
+import { EndpointDetailsComponent } from './endpoint-details/endpoint-details.component';
 
 @Component({
   selector: 'app-api-analytics',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EndpointDetailsComponent],
   templateUrl: './api-analytics.component.html',
   styleUrl: './api-analytics.component.css'
 })

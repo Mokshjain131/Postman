@@ -36,11 +36,11 @@
 		<!-- Status Distribution -->
 			<div class="card">
 			<div class="card-padding">
-				<h3 class="small-strong h3-compact">Status Code Distribution</h3>
-				<p class="muted mb-075">Breakdown of response status codes</p>
+			<h3 class="small-strong h3-compact">Status Code Distribution</h3>
+			<p class="muted mb-075">Breakdown of response status codes</p>
 
-					@if (statusDistribution?.length) {
-						@for (item of statusDistribution; track item) {
+				@if (statusDistribution.length) {
+					@for (item of statusDistribution; track item) {
 						<div class="space-y mb-075">
 						<div class="row fs-095">
 							<span>{{ item.status }}</span>
@@ -63,11 +63,11 @@
 		<!-- Top Endpoints -->
 			<div class="card">
 			<div class="card-padding">
-				<h3 class="small-strong h3-compact">Top Endpoints</h3>
-				<p class="muted mb-075">Most frequently tested API endpoints</p>
+		<h3 class="small-strong h3-compact">Top Endpoints</h3>
+		<p class="muted mb-075">Most frequently tested API endpoints</p>
 
-					@if (topEndpoints?.length) {
-						@for (ep of topEndpoints; let i = $index; track ep) {
+			@if (topEndpoints.length) {
+				@for (ep of topEndpoints; let i = $index; track ep) {
 						<div class="row-item">
 						<div class="flex-1">
 							<div class="mono small-strong">{{ ep.endpoint }}</div>
