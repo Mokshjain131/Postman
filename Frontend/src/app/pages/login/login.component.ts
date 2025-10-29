@@ -34,8 +34,8 @@ export class LoginComponent {
       const response = await this.authService.login(this.email, this.password);
       
       if (response.success) {
-        // Navigate to dashboard
-        this.router.navigate(['/dashboard']);
+        // Navigate to API tester
+        this.router.navigate(['/tester']);
       } else {
         this.errorMessage = response.message || 'Login failed';
       }

@@ -48,9 +48,9 @@ export class RegisterComponent {
       
       if (response.success) {
         this.successMessage = 'Registration successful! Redirecting...';
-        // Navigate to dashboard after short delay
+        // Navigate to API tester after short delay
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/tester']);
         }, 1500);
       } else {
         this.errorMessage = response.message || 'Registration failed';

@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { ContactComponent } from './pages/contact/contact.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -13,9 +12,9 @@ import { ApiRequestComponent } from './features/api-tester/api-request/api-reque
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent, pathMatch: 'full' },
+	{ path: 'home', component: HomeComponent },
 	{ path: 'about', component: AboutComponent },
 	{ path: 'contact', component: ContactComponent },
-	{ path: 'dashboard', component: DashboardComponent },
 	{ path: 'history', component: HistoryComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent },
