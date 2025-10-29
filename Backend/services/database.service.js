@@ -239,15 +239,29 @@ class DatabaseService {
   }
 
   async getRequestHistory(userId, limit = 1000, offset = 0) {
-    const [rows] = await this.pool.execute(
-      `SELECT id, url, method, status_code as status, duration_ms as durationMs, request_timestamp as ts, created_at
-      FROM request_history 
-      WHERE user_id = ? 
-      ORDER BY request_timestamp DESC 
-      LIMIT ? OFFSET ?`,
-      [userId, limit, offset]
-    );
-    return rows;
+    try {
+      // Ensure all parameters are the correct type
+      const userIdInt = parseInt(userId);
+      const limitInt = parseInt(limit);
+      const offsetInt = parseInt(offset);
+      
+      console.log('🔍 Fetching history for userId:', userIdInt, 'limit:', limitInt, 'offset:', offsetInt);
+      
+      // Use query() instead of execute() for LIMIT/OFFSET as they don't work with prepared statements
+      const [rows] = await this.pool.query(
+        `SELECT id, url, method, status_code as status, duration_ms as durationMs, request_timestamp as ts, created_at
+        FROM request_history 
+        WHERE user_id = ? 
+        ORDER BY request_timestamp DESC 
+        LIMIT ${limitInt} OFFSET ${offsetInt}`,
+        [userIdInt]
+      );
+      console.log('✅ Found', rows.length, 'history records');
+      return rows;
+    } catch (error) {
+      console.error('❌ Error fetching history:', error);
+      throw error;
+    }
   }
 
   async getFilteredHistory(userId, filters = {}) {

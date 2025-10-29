@@ -29,8 +29,15 @@ class HistoryService {
     const limit = options.limit || 1000;
     const offset = options.offset || 0;
 
-    const history = await database.getRequestHistory(userId, limit, offset);
-    return history;
+    try {
+      console.log('📋 Getting history for user:', userId, 'options:', options);
+      const history = await database.getRequestHistory(userId, limit, offset);
+      console.log('✅ Retrieved', history.length, 'history entries');
+      return history;
+    } catch (error) {
+      console.error('❌ Error getting history:', error);
+      throw error;
+    }
   }
 
   // Get filtered history

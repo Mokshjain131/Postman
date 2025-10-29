@@ -31,30 +31,36 @@ export class HistoryService {
 
   async add(entry: HistoryEntry): Promise<void> {
     try {
-      await firstValueFrom(
+      console.log('💾 Saving to backend:', entry);
+      const response = await firstValueFrom(
         this.http.post(this.baseUrl, {
           url: entry.url,
           method: entry.method,
-          statusCode: entry.status,
+          status: entry.status,
           durationMs: entry.durationMs,
           timestamp: entry.ts
         }, { headers: this.getHeaders() })
       );
+      console.log('✅ History saved successfully:', response);
     } catch (error) {
-      console.error('Failed to save history:', error);
-      // Fallback to localStorage if backend fails
-      this.addToLocalStorage(entry);
+      console.error('❌ Failed to save history to backend:', error);
+      // Don't use localStorage anymore - just log the error
+      throw error;
     }
   }
 
   async list(): Promise<HistoryEntry[]> {
     try {
+      console.log('📥 Fetching history from backend...');
       const response: any = await firstValueFrom(
         this.http.get(this.baseUrl, { headers: this.getHeaders() })
       );
       
-      if (response.success && Array.isArray(response.history)) {
-        return response.history.map((item: any) => ({
+      console.log('✅ History response:', response);
+      
+      // Backend returns array directly
+      if (Array.isArray(response)) {
+        return response.map((item: any) => ({
           id: item.id,
           ts: item.ts,
           method: item.method,
@@ -66,52 +72,34 @@ export class HistoryService {
       
       return [];
     } catch (error) {
-      console.error('Failed to fetch history:', error);
-      // Fallback to localStorage if backend fails
-      return this.listFromLocalStorage();
+      console.error('❌ Failed to fetch history from backend:', error);
+      return [];
     }
   }
 
   async clear(): Promise<void> {
     try {
+      console.log('🗑️ Clearing history...');
       await firstValueFrom(
         this.http.delete(this.baseUrl, { headers: this.getHeaders() })
       );
+      console.log('✅ History cleared');
     } catch (error) {
-      console.error('Failed to clear history:', error);
+      console.error('❌ Failed to clear history:', error);
+      throw error;
     }
-    // Also clear localStorage
-    localStorage.removeItem('apiTester:history');
   }
 
   async deleteEntry(id: number): Promise<void> {
     try {
+      console.log('🗑️ Deleting history entry:', id);
       await firstValueFrom(
         this.http.delete(`${this.baseUrl}/${id}`, { headers: this.getHeaders() })
       );
+      console.log('✅ History entry deleted');
     } catch (error) {
-      console.error('Failed to delete history entry:', error);
-    }
-  }
-
-  // Fallback methods for localStorage (when not logged in or backend fails)
-  private addToLocalStorage(entry: HistoryEntry): void {
-    const KEY = 'apiTester:history';
-    const MAX = 50;
-    const list = this.listFromLocalStorage();
-    list.unshift(entry);
-    if (list.length > MAX) list.length = MAX;
-    localStorage.setItem(KEY, JSON.stringify(list));
-  }
-
-  private listFromLocalStorage(): HistoryEntry[] {
-    const KEY = 'apiTester:history';
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    try { 
-      return JSON.parse(raw) as HistoryEntry[]; 
-    } catch { 
-      return []; 
+      console.error('❌ Failed to delete history entry:', error);
+      throw error;
     }
   }
 }
