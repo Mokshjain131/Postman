@@ -23,7 +23,7 @@ router.all('/', async (req, res) => {
     const isHttps = urlObj.protocol === 'https:';
     const httpModule = isHttps ? https : http;
     
-    console.log('🌐 Making external request to:', url);
+    console.log('Making external request to:', url);
 
     // Prepare request options
     const options = {
@@ -60,7 +60,7 @@ router.all('/', async (req, res) => {
           parsedBody = responseBody;
         }
 
-        console.log('✅ External API responded with status:', proxyRes.statusCode);
+        console.log('External API responded with status:', proxyRes.statusCode);
         
         // Send response back to client
         res.status(proxyRes.statusCode).json({

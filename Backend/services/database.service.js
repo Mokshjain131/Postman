@@ -9,13 +9,13 @@ class DatabaseService {
   async connect() {
     try {
       this.pool = mysql.createPool(dbConfig);
-      console.log('✅ Database connection pool created');
+      console.log('Database connection pool created');
       
       const connection = await this.pool.getConnection();
-      console.log('✅ Database connected successfully');
+      console.log('Database connected successfully');
       connection.release();
     } catch (error) {
-      console.error('❌ Database connection failed:', error.message);
+      console.error('Database connection failed:', error.message);
       throw error;
     }
   }
@@ -29,11 +29,11 @@ class DatabaseService {
       });
 
       await tempPool.execute(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`);
-      console.log('✅ Database created/verified');
+      console.log('Database created/verified');
       
       await tempPool.end();
     } catch (error) {
-      console.error('❌ Database creation failed:', error.message);
+      console.error('Database creation failed:', error.message);
       throw error;
     }
   }
@@ -51,7 +51,7 @@ class DatabaseService {
           INDEX idx_email (email)
         )
       `);
-      console.log('✅ Users table created/verified');
+      console.log('Users table created/verified');
 
       await this.pool.execute(`
         CREATE TABLE IF NOT EXISTS request_history (
@@ -69,7 +69,7 @@ class DatabaseService {
           INDEX idx_status (status_code)
         )
       `);
-      console.log('✅ Request history table created/verified');
+      console.log('Request history table created/verified');
 
       await this.pool.execute(`
         CREATE TABLE IF NOT EXISTS saved_requests (
@@ -87,7 +87,7 @@ class DatabaseService {
           INDEX idx_user_folder (user_id, folder)
         )
       `);
-      console.log('✅ Saved requests table created/verified');
+      console.log('Saved requests table created/verified');
 
       await this.pool.execute(`
         CREATE TABLE IF NOT EXISTS user_sessions (
@@ -101,10 +101,10 @@ class DatabaseService {
           INDEX idx_user (user_id)
         )
       `);
-      console.log('✅ User sessions table created/verified');
+      console.log('User sessions table created/verified');
 
     } catch (error) {
-      console.error('❌ Table creation failed:', error.message);
+      console.error('Table creation failed:', error.message);
       throw error;
     }
   }
@@ -123,12 +123,12 @@ class DatabaseService {
           'INSERT INTO users (id, email, password_hash, name) VALUES (?, ?, ?, ?)',
           [1, 'guest@localhost', 'no-password', 'Guest User']
         );
-        console.log('✅ Guest user created');
+        console.log('Guest user created');
       } else {
-        console.log('✅ Guest user already exists');
+        console.log('Guest user already exists');
       }
     } catch (error) {
-      console.error('❌ Guest user creation failed:', error.message);
+      console.error('Guest user creation failed:', error.message);
     }
   }
 
@@ -137,7 +137,7 @@ class DatabaseService {
     await this.connect();
     await this.createTables();
     await this.createGuestUser();
-    console.log('✅ Database initialization complete');
+    console.log('Database initialization complete');
   }
 
   // ==================== USER QUERIES ====================
@@ -256,10 +256,10 @@ class DatabaseService {
         LIMIT ${limitInt} OFFSET ${offsetInt}`,
         [userIdInt]
       );
-      console.log('✅ Found', rows.length, 'history records');
+      console.log('Found', rows.length, 'history records');
       return rows;
     } catch (error) {
-      console.error('❌ Error fetching history:', error);
+      console.error('Error fetching history:', error);
       throw error;
     }
   }
@@ -428,7 +428,7 @@ class DatabaseService {
   async close() {
     if (this.pool) {
       await this.pool.end();
-      console.log('✅ Database connection closed');
+      console.log('Database connection closed');
     }
   }
 }

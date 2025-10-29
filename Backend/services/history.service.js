@@ -30,12 +30,12 @@ class HistoryService {
     const offset = options.offset || 0;
 
     try {
-      console.log('📋 Getting history for user:', userId, 'options:', options);
+      console.log('Getting history for user:', userId, 'options:', options);
       const history = await database.getRequestHistory(userId, limit, offset);
-      console.log('✅ Retrieved', history.length, 'history entries');
+      console.log('Retrieved', history.length, 'history entries');
       return history;
     } catch (error) {
-      console.error('❌ Error getting history:', error);
+      console.error('Error getting history:', error);
       throw error;
     }
   }

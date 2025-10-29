@@ -44,14 +44,14 @@ async function startServer() {
     await database.cleanExpiredSessions();
 
     app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
-      console.log(`📊 API endpoints available at http://localhost:${PORT}/api`);
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`API endpoints available at http://localhost:${PORT}/api`);
     });
 
     // Clean expired sessions every hour
     setInterval(async () => {
       const count = await database.cleanExpiredSessions();
-      console.log(`🧹 Cleaned ${count} expired sessions`);
+      console.log(`Cleaned ${count} expired sessions`);
     }, 60 * 60 * 1000);
 
   } catch (error) {

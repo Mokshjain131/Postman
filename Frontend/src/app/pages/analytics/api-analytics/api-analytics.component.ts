@@ -45,6 +45,15 @@ export class ApiAnalyticsComponent implements OnInit {
   perf = 'all';
   range: '1d'|'7d'|'30d'|'all' = '7d';
 
+  // selected endpoint details
+  selectedEndpoint: {
+    endpoint: string;
+    method: string;
+    requests: HistoryEntry[];
+    statusDistribution: { status: number; count: number; percentage: number }[];
+    timeSeriesData: { timestamp: string; responseTime: number }[];
+  } | null = null;
+
   constructor(private history: HistoryService){}
 
   ngOnInit(){ this.recompute(); }
@@ -119,5 +128,76 @@ export class ApiAnalyticsComponent implements OnInit {
       totalErrors,
       totalRequests,
     };
+  }
+
+  selectEndpoint(row: { endpoint: string; method: string }) {
+    // Find all requests for this endpoint
+    const requests = this.all.filter((e: HistoryEntry) => {
+      let path = e.url;
+      try { path = new URL(e.url).pathname; } catch {}
+      return path === row.endpoint && e.method === row.method;
+    });
+
+    if (requests.length === 0) {
+      this.selectedEndpoint = null;
+      return;
+    }
+
+    // Calculate status distribution
+    const statusMap = new Map<number, number>();
+    requests.forEach((r: HistoryEntry) => {
+      statusMap.set(r.status, (statusMap.get(r.status) || 0) + 1);
+    });
+
+    const statusDistribution = Array.from(statusMap.entries())
+      .map(([status, count]) => ({
+        status,
+        count,
+        percentage: +(count / requests.length * 100).toFixed(1)
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    // Create time series data (last 20 requests)
+    const timeSeriesData = requests
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 20)
+      .reverse()
+      .map((r: HistoryEntry) => ({
+        timestamp: new Date(r.ts).toLocaleTimeString(),
+        responseTime: r.durationMs
+      }));
+
+    this.selectedEndpoint = {
+      endpoint: row.endpoint,
+      method: row.method,
+      requests,
+      statusDistribution,
+      timeSeriesData
+    };
+  }
+
+  getStatusClass(status: number): string {
+    if (status >= 200 && status < 300) return 'status-success';
+    if (status >= 300 && status < 400) return 'status-redirect';
+    if (status >= 400 && status < 500) return 'status-client-error';
+    if (status >= 500) return 'status-server-error';
+    return 'status-info';
+  }
+
+  getAvgResponseTime(): number {
+    if (!this.selectedEndpoint || this.selectedEndpoint.requests.length === 0) return 0;
+    const sum = this.selectedEndpoint.requests.reduce((acc, r) => acc + r.durationMs, 0);
+    return sum / this.selectedEndpoint.requests.length;
+  }
+
+  getSuccessRate(): number {
+    if (!this.selectedEndpoint || this.selectedEndpoint.requests.length === 0) return 0;
+    const successCount = this.selectedEndpoint.requests.filter(r => r.status >= 200 && r.status < 300).length;
+    return (successCount / this.selectedEndpoint.requests.length * 100);
+  }
+
+  getMaxResponseTime(): number {
+    if (!this.selectedEndpoint || this.selectedEndpoint.timeSeriesData.length === 0) return 1;
+    return Math.max(...this.selectedEndpoint.timeSeriesData.map(p => p.responseTime));
   }
 }

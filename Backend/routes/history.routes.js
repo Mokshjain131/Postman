@@ -18,7 +18,7 @@ const optionalAuth = (req, res, next) => {
 // Save request to history
 router.post('/', optionalAuth, async (req, res) => {
   try {
-    console.log('📝 Saving history:', req.body);
+    console.log('Saving history:', req.body);
     
     // Map frontend field names to backend expected names
     const requestData = {
@@ -30,10 +30,10 @@ router.post('/', optionalAuth, async (req, res) => {
     };
     
     const result = await historyService.saveRequest(req.user.userId, requestData);
-    console.log('✅ History saved:', result);
+    console.log('History saved:', result);
     res.json(result);
   } catch (error) {
-    console.error('❌ Save history error:', error);
+    console.error('Save history error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -41,16 +41,16 @@ router.post('/', optionalAuth, async (req, res) => {
 // Get request history
 router.get('/', optionalAuth, async (req, res) => {
   try {
-    console.log('📥 Fetching history for user:', req.user.userId);
+    console.log('Fetching history for user:', req.user.userId);
     const options = {
       limit: parseInt(req.query.limit) || 1000,
       offset: parseInt(req.query.offset) || 0
     };
     const history = await historyService.getHistory(req.user.userId, options);
-    console.log('✅ Returning', history.length, 'history entries');
+    console.log('Returning', history.length, 'history entries');
     res.json(history);
   } catch (error) {
-    console.error('❌ Get history error:', error);
+    console.error('Get history error:', error);
     res.status(500).json({ error: error.message });
   }
 });

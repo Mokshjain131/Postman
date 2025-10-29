@@ -13,30 +13,90 @@
 			<div class="card-padding">
 				<h2 class="section-title">Send us a Message</h2>
 				<p class="muted mb-1">Fill out the form below and we'll get back to you as soon as possible</p>
-				<form class="form">
+				
+				<!-- Success Message -->
+				@if (successMessage) {
+					<div class="alert alert-success" style="background: #d1fae5; border: 1px solid #6ee7b7; padding: 12px; border-radius: 6px; margin-bottom: 16px; color: #065f46;">
+						{{ successMessage }}
+					</div>
+				}
+
+				<!-- Error Message -->
+				@if (errorMessage) {
+					<div class="alert alert-error" style="background: #fee2e2; border: 1px solid #fecaca; padding: 12px; border-radius: 6px; margin-bottom: 16px; color: #991b1b;">
+						{{ errorMessage }}
+					</div>
+				}
+
+				<form #contactForm="ngForm" (ngSubmit)="handleSubmit(contactForm)" class="form" novalidate>
 					<div class="grid grid-2">
 						<div>
-							<label>Full Name *</label>
-							<input required placeholder="Enter your full name" class="input" />
+							<label for="name">Full Name *</label>
+							<input 
+								id="name"
+								name="name"
+								[(ngModel)]="formData.name"
+								required 
+								placeholder="Enter your full name" 
+								class="input" />
+							@if (contactForm.submitted && contactForm.controls['name']?.errors?.['required']) {
+								<p class="error-text">Name is required</p>
+							}
 						</div>
 						<div>
-							<label>Email Address *</label>
-							<input required type="email" placeholder="Enter your email address" class="input" />
+							<label for="email">Email Address *</label>
+							<input 
+								id="email"
+								name="email"
+								[(ngModel)]="formData.email"
+								required 
+								type="email" 
+								email
+								placeholder="Enter your email address" 
+								class="input" />
+							@if (contactForm.submitted && contactForm.controls['email']?.errors?.['required']) {
+								<p class="error-text">Email is required</p>
+							}
+							@if (contactForm.submitted && contactForm.controls['email']?.errors?.['email']) {
+								<p class="error-text">Enter a valid email</p>
+							}
 						</div>
 					</div>
 					<div>
-						<label>Subject *</label>
-						<input required placeholder="What's this about?" class="input" />
-					</div>
-					<div>
-						<label>Message *</label>
-						<textarea required placeholder="Tell us how we can help you..." rows="5" class="input"></textarea>
-					</div>
-					<div>
-						<button type="button" class="btn grad" (click)="$any(this).sent = true">Send Message</button>
-						@if ($any(this).sent) {
-							<span class="muted ml-05">Message sent! (demo)</span>
+						<label for="subject">Subject *</label>
+						<input 
+							id="subject"
+							name="subject"
+							[(ngModel)]="formData.subject"
+							required 
+							placeholder="What's this about?" 
+							class="input" />
+						@if (contactForm.submitted && contactForm.controls['subject']?.errors?.['required']) {
+							<p class="error-text">Subject is required</p>
 						}
+					</div>
+					<div>
+						<label for="message">Message *</label>
+						<textarea 
+							id="message"
+							name="message"
+							[(ngModel)]="formData.message"
+							required 
+							minlength="10"
+							placeholder="Tell us how we can help you..." 
+							rows="5" 
+							class="input"></textarea>
+						@if (contactForm.submitted && contactForm.controls['message']?.errors?.['required']) {
+							<p class="error-text">Message is required</p>
+						}
+						@if (contactForm.submitted && contactForm.controls['message']?.errors?.['minlength']) {
+							<p class="error-text">Message must be at least 10 characters</p>
+						}
+					</div>
+					<div>
+						<button type="submit" class="btn grad" [disabled]="isSubmitting">
+							{{ isSubmitting ? 'Sending...' : 'Send Message' }}
+						</button>
 					</div>
 				</form>
 			</div>

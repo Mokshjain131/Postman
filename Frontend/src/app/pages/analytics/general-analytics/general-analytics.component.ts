@@ -14,13 +14,10 @@ export class GeneralAnalyticsComponent implements OnInit {
   stats: Array<{title:string; value:string; change:string; trend:'up'|'down'; description:string}> = [];
   statusDistribution: Array<{ status:string; count:number; percentage:number; color:string }> = [];
   topEndpoints: Array<{ endpoint:string; requests:number; avgTime:string; errorRate:string }> = [];
-  activeTab: 'requests' | 'response-time' | 'errors' = 'requests';
 
   constructor(private history: HistoryService) {}
 
   ngOnInit() { this.recompute(); }
-
-  setTab(tab: 'requests' | 'response-time' | 'errors') { this.activeTab = tab; }
 
   private rangeStartMs(): number {
     const now = Date.now();

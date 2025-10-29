@@ -210,31 +210,6 @@
 	font-size: 0.9rem;
 }
 
-.separator {
-	position: relative;
-	text-align: center;
-	margin: 1rem 0;
-}
-
-.separator:before {
-	content: "";
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	height: 1px;
-	background: var(--border);
-}
-
-.separator > span {
-	position: relative;
-	background: var(--card);
-	padding: 0 0.5rem;
-	color: var(--muted);
-	font-size: 0.75rem;
-	text-transform: uppercase;
-}
-
 .spinner {
 	width: 1rem;
 	height: 1rem;
@@ -249,12 +224,4 @@
 	to {
 		transform: rotate(360deg);
 	}
-}
-
-.g-logo {
-	width: 1rem;
-	height: 1rem;
-	display: inline-block;
-	background: conic-gradient(#4285F4 0 25%, #34A853 0 50%, #FBBC05 0 75%, #EA4335 0);
-	border-radius: 2px;
 }

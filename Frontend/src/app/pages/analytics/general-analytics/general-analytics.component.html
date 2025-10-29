@@ -83,27 +83,4 @@
 		</div>
 	</div>
 
-	<!-- Performance Trends -->
-	<div class="card card-mt">
-		<div class="card-padding">
-			<h3 class="small-strong h3-compact">Performance Trends</h3>
-			<p class="muted mb-075">Request volume and response time trends over time</p>
-
-			<div class="tabs">
-				<button class="tab" [class.active]="activeTab==='requests'" (click)="setTab('requests')">Request Volume</button>
-				<button class="tab" [class.active]="activeTab==='response-time'" (click)="setTab('response-time')">Response Time</button>
-				<button class="tab" [class.active]="activeTab==='errors'" (click)="setTab('errors')">Error Rate</button>
-			</div>
-
-			@if (activeTab==='requests') {
-				<p class="muted">Request volume chart would be displayed here</p>
-			}
-			@if (activeTab==='response-time') {
-				<p class="muted">Response time chart would be displayed here</p>
-			}
-			@if (activeTab==='errors') {
-				<p class="muted">Error rate chart would be displayed here</p>
-			}
-		</div>
-	</div>
 </div>
