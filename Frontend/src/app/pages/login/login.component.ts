@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   showPassword = false;
   email = '';
@@ -34,8 +35,9 @@ export class LoginComponent {
       const response = await this.authService.login(this.email, this.password);
       
       if (response.success) {
-        // Navigate to API tester
-        this.router.navigate(['/tester']);
+        // Navigate to return URL or home page
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+        this.router.navigateByUrl(returnUrl);
       } else {
         this.errorMessage = response.message || 'Login failed';
       }

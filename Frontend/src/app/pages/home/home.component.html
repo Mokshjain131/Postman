@@ -1,6 +1,11 @@
 <div class="min-screen">
 	<!-- Hero -->
 	<section class="container hero">
+		@if (authService.isAuthenticated()) {
+			<div class="welcome-message">
+				<h2 class="welcome-text">Welcome, <span class="grad-text">{{ getFirstName() }}</span>!</h2>
+			</div>
+		}
 		<span class="badge">
 			Professional API Testing Tool
 		</span>
@@ -11,7 +16,7 @@
 			A comprehensive API testing platform inspired by Postman, built for powerful testing, debugging, and analytics.
 		</p>
 		<div class="hero-actions">
-			<a routerLink="/register" class="btn grad pad">Start Testing Now</a>
+			<a routerLink="/tester" class="btn grad pad">Start Testing Now</a>
 			<a routerLink="/about" class="btn outline pad">Learn More</a>
 		</div>
 

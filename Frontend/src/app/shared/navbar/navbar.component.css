@@ -224,6 +224,19 @@
 	filter: brightness(1.08);
 }
 
+.user-info {
+	color: var(--primary);
+	font-weight: 500;
+	font-size: 0.95rem;
+	margin-right: 1rem;
+	padding: 0.5rem 1rem;
+	background: rgba(107, 39, 217, 0.1);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border-radius: 0.65rem;
+	box-shadow: 0 2px 8px rgba(107, 39, 217, 0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
 	.navbar {
