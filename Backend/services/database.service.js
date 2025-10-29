@@ -24,8 +24,10 @@ class DatabaseService {
     try {
       const tempPool = mysql.createPool({
         host: dbConfig.host,
+        port: dbConfig.port,
         user: dbConfig.user,
-        password: dbConfig.password
+        password: dbConfig.password,
+        ssl: dbConfig.ssl
       });
 
       await tempPool.execute(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`);
