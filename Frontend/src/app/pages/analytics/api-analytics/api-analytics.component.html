@@ -79,39 +79,39 @@
 						<div class="th">Last Called</div>
 					</div>
 				</div>
-						@if (rows.length) {
-							@for (ep of rows; track ep) {
-							<div class="tr">
-								<div class="td mono small ellipsis">{{ ep.endpoint }}</div>
-								<div class="td">
-									<span class="badge mono small badge-bg" [style.color]="methodColor(ep.method)" [style.borderColor]="methodColor(ep.method)">{{ ep.method }}</span>
-								</div>
-								<div class="td mono">{{ ep.totalRequests | number }}</div>
-								<div class="td">
-									<div class="flex-row">
-										<span class="dot" [style.background]="successRateColor(ep.successRate)"></span>
-										<span class="mono">{{ ep.successRate }}%</span>
-									</div>
-								</div>
-								<div class="td mono">{{ formatTime(ep.avgResponseTime) }}</div>
-								<div class="td mono muted">{{ formatTime(ep.p95ResponseTime) }}</div>
-								<div class="td">
-									@if (ep.errorCount > 0) {
-										<span class="badge small badge-error">{{ ep.errorCount }}</span>
-									} @else {
-										<span class="muted">0</span>
-									}
-								</div>
-								<div class="td small muted">{{ ep.lastCalled }}</div>
+				<div class="tbody">
+					@if (rows.length) {
+						@for (ep of rows; track ep) {
+						<div class="tr">
+							<div class="td mono small ellipsis">{{ ep.endpoint }}</div>
+							<div class="td">
+								<span class="badge mono small badge-bg" [style.color]="methodColor(ep.method)" [style.borderColor]="methodColor(ep.method)">{{ ep.method }}</span>
 							</div>
-							}
-						} @else {
-							<div class="tbody">
-								<div class="tr">
-									<div class="td muted grid-span-all">No data in this range.</div>
+							<div class="td mono">{{ ep.totalRequests | number }}</div>
+							<div class="td">
+								<div class="flex-row">
+									<span class="dot" [style.background]="successRateColor(ep.successRate)"></span>
+									<span class="mono">{{ ep.successRate }}%</span>
 								</div>
 							</div>
+							<div class="td mono">{{ formatTime(ep.avgResponseTime) }}</div>
+							<div class="td mono muted">{{ formatTime(ep.p95ResponseTime) }}</div>
+							<div class="td">
+								@if (ep.errorCount > 0) {
+									<span class="badge small badge-error">{{ ep.errorCount }}</span>
+								} @else {
+									<span class="muted">0</span>
+								}
+							</div>
+							<div class="td small muted">{{ ep.lastCalled }}</div>
+						</div>
 						}
+					} @else {
+						<div class="tr">
+							<div class="td muted grid-span-all">No data in this range.</div>
+						</div>
+					}
+				</div>
 			</div>
 		</div>
 	</div>

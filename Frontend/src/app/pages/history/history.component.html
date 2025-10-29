@@ -9,12 +9,12 @@
 		<div class="card-padding toolbar">
 			<div class="controls">
 				<div class="relative">
-					<input placeholder="Search requests..." class="input pl10" />
+					<input placeholder="Search requests..." class="input pl10" [(ngModel)]="searchQuery" (input)="applyFilters()" />
 					<span class="icon left">
 						<img src="/search.svg" alt="" width="16" height="16" />
 					</span>
 				</div>
-				<select class="select">
+				<select class="select" [(ngModel)]="selectedMethod" (change)="applyFilters()">
 					<option>All Methods</option>
 					<option>GET</option>
 					<option>POST</option>
@@ -22,7 +22,7 @@
 					<option>PATCH</option>
 					<option>DELETE</option>
 				</select>
-				<select class="select">
+				<select class="select" [(ngModel)]="selectedStatus" (change)="applyFilters()">
 					<option>All Status</option>
 					<option>2xx Success</option>
 					<option>3xx Redirect</option>
@@ -49,11 +49,13 @@
 				</thead>
 				<tbody>
 					@for (e of entries; track e) {
-						<td><span class="badge" [ngClass]="'text-method-' + e.method.toLowerCase()">{{ e.method }}</span></td>
-						<td class="url">{{ e.url }}</td>
-						<td>{{ e.status }}</td>
-						<td>{{ e.durationMs }} ms</td>
-						<td>{{ e.ts | date:'short' }}</td>
+						<tr>
+							<td><span class="badge" [ngClass]="'text-method-' + e.method.toLowerCase()">{{ e.method }}</span></td>
+							<td class="url">{{ e.url }}</td>
+							<td>{{ e.status }}</td>
+							<td>{{ e.durationMs }} ms</td>
+							<td>{{ e.ts | date:'short' }}</td>
+						</tr>
 					}
 				</tbody>
 			</table>
