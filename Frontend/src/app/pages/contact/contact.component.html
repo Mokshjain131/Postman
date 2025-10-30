@@ -37,11 +37,11 @@
 								name="name"
 								[(ngModel)]="formData.name"
 								required 
-								placeholder="Enter your full name" 
-								class="input" />
-							@if (contactForm.submitted && contactForm.controls['name']?.errors?.['required']) {
-								<p class="error-text">Name is required</p>
-							}
+							placeholder="Enter your full name" 
+							class="input" />
+						@if (contactForm.submitted && contactForm.controls['name'].errors?.['required']) {
+							<p class="error-text">Name is required</p>
+						}
 						</div>
 						<div>
 							<label for="email">Email Address *</label>
@@ -52,14 +52,14 @@
 								required 
 								type="email" 
 								email
-								placeholder="Enter your email address" 
-								class="input" />
-							@if (contactForm.submitted && contactForm.controls['email']?.errors?.['required']) {
-								<p class="error-text">Email is required</p>
-							}
-							@if (contactForm.submitted && contactForm.controls['email']?.errors?.['email']) {
-								<p class="error-text">Enter a valid email</p>
-							}
+							placeholder="Enter your email address" 
+							class="input" />
+						@if (contactForm.submitted && contactForm.controls['email'].errors?.['required']) {
+							<p class="error-text">Email is required</p>
+						}
+						@if (contactForm.submitted && contactForm.controls['email'].errors?.['email']) {
+							<p class="error-text">Enter a valid email</p>
+						}
 						</div>
 					</div>
 					<div>
@@ -71,7 +71,7 @@
 							required 
 							placeholder="What's this about?" 
 							class="input" />
-						@if (contactForm.submitted && contactForm.controls['subject']?.errors?.['required']) {
+						@if (contactForm.submitted && contactForm.controls['subject'].errors?.['required']) {
 							<p class="error-text">Subject is required</p>
 						}
 					</div>
@@ -86,10 +86,10 @@
 							placeholder="Tell us how we can help you..." 
 							rows="5" 
 							class="input"></textarea>
-						@if (contactForm.submitted && contactForm.controls['message']?.errors?.['required']) {
+						@if (contactForm.submitted && contactForm.controls['message'].errors?.['required']) {
 							<p class="error-text">Message is required</p>
 						}
-						@if (contactForm.submitted && contactForm.controls['message']?.errors?.['minlength']) {
+						@if (contactForm.submitted && contactForm.controls['message'].errors?.['minlength']) {
 							<p class="error-text">Message must be at least 10 characters</p>
 						}
 					</div>

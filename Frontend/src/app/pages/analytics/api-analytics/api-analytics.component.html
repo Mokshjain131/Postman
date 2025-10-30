@@ -118,85 +118,9 @@
 		</div>
 	</div>
 
-	<!-- Endpoint Details Card -->
-	<div class="card mb-1">
-		<div class="card-padding">
-			<h3 class="small-strong h3-compact">Endpoint Performance Trends</h3>
-			
-			@if (selectedEndpoint) {
-				<div class="endpoint-details">
-					<!-- Header -->
-					<div class="detail-header">
-						<div class="detail-title">
-							<span class="badge mono" [style.color]="methodColor(selectedEndpoint.method)" [style.borderColor]="methodColor(selectedEndpoint.method)">
-								{{ selectedEndpoint.method }}
-							</span>
-							<span class="mono">{{ selectedEndpoint.endpoint }}</span>
-						</div>
-						<button class="btn ghost small" (click)="selectedEndpoint = null">Close</button>
-					</div>
-
-					<!-- Metrics Grid -->
-					<div class="grid grid-3 mt-1 mb-1">
-						<div class="metric-card">
-							<div class="metric-label">Total Requests</div>
-							<div class="metric-value">{{ selectedEndpoint.requests.length }}</div>
-						</div>
-						<div class="metric-card">
-							<div class="metric-label">Avg Response Time</div>
-							<div class="metric-value">
-								{{ formatTime(getAvgResponseTime()) }}
-							</div>
-						</div>
-						<div class="metric-card">
-							<div class="metric-label">Success Rate</div>
-							<div class="metric-value">
-								{{ getSuccessRate() | number:'1.0-1' }}%
-							</div>
-						</div>
-					</div>
-
-					<!-- Status Distribution -->
-					<div class="detail-section">
-						<h4 class="detail-section-title">Status Code Distribution</h4>
-						<div class="status-distribution">
-							@for (stat of selectedEndpoint.statusDistribution; track stat.status) {
-								<div class="status-bar">
-									<div class="status-info">
-										<span class="badge small" [class]="getStatusClass(stat.status)">{{ stat.status }}</span>
-										<span class="muted small">{{ stat.count }} requests ({{ stat.percentage }}%)</span>
-									</div>
-									<div class="progress-bar">
-										<div class="progress-fill" [style.width.%]="stat.percentage" [class]="getStatusClass(stat.status)"></div>
-									</div>
-								</div>
-							}
-						</div>
-					</div>
-
-					<!-- Recent Response Times -->
-					<div class="detail-section">
-						<h4 class="detail-section-title">Recent Response Times (Last 20 Requests)</h4>
-						<div class="time-series">
-							@for (point of selectedEndpoint.timeSeriesData; track point.timestamp) {
-								<div class="time-point">
-									<div class="time-label">{{ point.timestamp }}</div>
-									<div class="time-bar-container">
-										<div class="time-bar" [style.width.%]="(point.responseTime / getMaxResponseTime()) * 100">
-											<span class="time-value">{{ formatTime(point.responseTime) }}</span>
-										</div>
-									</div>
-								</div>
-							}
-						</div>
-					</div>
-				</div>
-			} @else {
-				<p class="muted mb-075">Select an endpoint above to view detailed performance analysis</p>
-				<div class="chart-placeholder">
-					<p class="muted">Click on an endpoint to view detailed metrics</p>
-				</div>
-			}
-		</div>
-	</div>
+	<!-- Endpoint Details Component -->
+	<app-endpoint-details 
+		[selectedEndpoint]="selectedEndpoint"
+		(close)="selectedEndpoint = null">
+	</app-endpoint-details>
 </div>
